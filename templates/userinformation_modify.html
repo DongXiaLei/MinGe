@@ -1,0 +1,1492 @@
+﻿
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>userinformation_modify</title>
+
+    {% load staticfiles %}
+    <!-- BOOTSTRAP STYLES-->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" />
+    <!-- FONTAWESOME STYLES-->
+    <link href="{% static 'css/font-awesome.css' %}" rel="stylesheet" />
+       <!--CUSTOM BASIC STYLES-->
+    <link href="{% static 'css/basic.css' %}" rel="stylesheet" />
+    <!--CUSTOM MAIN STYLES-->
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet" />
+    <!-- GOOGLE FONTS-->
+    <link href='' rel='stylesheet' type='text/css' />
+    <!--DATE TIME PICKER-->
+    <link href="{% static 'css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet"/>
+
+</head>
+<body>
+<div id="wrapper">
+    <nav class="navbar navbar-default navbar-cls-top " role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="index.html">国民革命委员会</a>
+        </div>
+
+        <div class="header-right">
+
+                <p>{{ user.username }},您好</p>
+
+        </div>
+    </nav>
+    <!-- /. NAV TOP  -->
+    <nav class="navbar-default navbar-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+                <li>
+                    <div class="user-img-div">
+                        <img src="{% static 'img/user.png' %}" class="img-thumbnail" />
+                         <button class="btn bg-info"><a href="{% url 'logout' %}">退出</a></button>
+                        <div class="inner-text">
+                            {% if user.is_manager %} 管理员：{% else %}普通用户：{% endif %}{{ user.username }}
+                            <br />
+                            <small>登录时间 : {{ time }}</small>
+                        </div>
+                    </div>
+
+                </li>
+
+
+                <li>
+                    <a class="" href="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                </li>
+                <li>
+                    <a href="{% url 'index' %}"><i class="fa fa-circle-o "></i>民革简介 </a>
+
+                </li>
+                <li>
+                    <a href="{% url 'leader' %}"><i class="fa fa-circle-o "></i>领导班组</a>
+                </li>
+                <li>
+                    <a href="{% url 'activity' %}"><i class="fa fa-circle-o "></i>活动风采 </a>
+                </li>
+                <li>
+                    <a href="{% url 'addresslist' %}"><i class="fa fa-bug "></i>支部通信录</a>
+                </li>
+                <li>
+                    <a href="{% url 'userinformation' %}?name={{ user.username }}"><i class="fa fa-bicycle "></i>个人信息入口</a>
+                </li>
+               {% if user.is_manager %}
+                       <li>
+                           <a href="{% url 'userlist' %}"><i class="fa fa-bicycle "></i>管理员入口</a>
+                        </li>
+                       {% else %}
+                        <li>
+                           <a href="{% url 'login' %}"><i class="fa fa-bicycle "></i>管理员入口</a>
+                       </li>
+                       {% endif %}
+            </ul>
+
+        </div>
+
+    </nav>
+    <!-- /. NAV SIDE  -->
+    <div id="page-wrapper"  style="font-family: 'Open Sans', Courier, monospace; font-size: 12px;">
+        <div id="page-inner">
+
+            <div class="col-md-12">
+                <h1 class="page-head-line">修改个人信息</h1>
+
+<h1 class="page-subhead-line">{{ Msg }}</h1>
+                <a class="btn btn-success" href="#basic-info">基本信息</a>
+                <a class="btn btn-warning" href="#edu-info"> 学历信息</a>
+                <a class="btn btn-info" href="#addr-info">单位地址</a>
+                <a class="btn btn-danger" href="#job-info">任职信息</a>
+                <a class="btn btn-success bl-sm" href="#resume-info">简历信息</a>
+                <a class="btn btn-warning" href="#reward-info">获奖信息</a>
+                <a class="btn btn-info" href="#warnning-info">处分信息</a>
+                <a class="btn btn-danger" href="#party-info">党派团体</a>
+                <a class="btn btn-success" href="#family-info">家庭成员</a>
+                <a class="btn btn-success" href="#social-info">社会关系</a>
+                <a href="" class="btn  btn-lg">
+
+
+
+                    <br>
+                </a>
+                <br>
+                <div style="margin-left: 300px">
+                    <a href="{% url 'modifyinfo' %}?id={{ new_user_id }}" class="btn btn-success btn-lg ">修改信息</a>
+                    <a href="{% url 'deleteinfo' %}?id={{ new_user_id }}" class="btn btn-info btn-lg ">删除信息</a>
+                    <a href="{% url 'userinformation_add' %}" class="btn btn-primary btn-lg ">新增信息</a>
+                </div>
+                <h1 class="page-subhead-line"> </h1>
+                <br>
+            </div>
+
+            <div class="col-md-12">
+
+                <div class="row">
+                    <div id = "person-info">
+
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">个人信息</div>
+                                    <div class="panel-body">
+                                        <form class="form-inline" method="POST" action="{% url 'modifyinfo' %}">
+                                            {% csrf_token %}
+                                            <!--基本信息-->
+                                            <div class="panel panel-success">
+                                                <div class="panel-heading" id="basic-info">基本信息</div>
+                                                <div class="panel-body">
+                                                        <div class="row">
+                                                                <div class="col-md-3">
+                                                                    <div style="margin-top: 10px;">
+                                                                        <div class="form-group">
+                                                                            <label class="">姓名：</label>
+                                                                            <input value="{{ user.name }}" type="text" name="name" class="form-control">
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div style="margin-top: 10px;">
+                                                                            <div class="form-group">
+                                                                                <label class="" style="float: left; margin-right: 10px;">民族：</label>
+                                                                                <select name="selectnation" class="form-control">
+                                                                                    <option selected="selected">{{ user.nation }}</option>
+                                                                                        <option>汉族</option>
+                                                                                        <option>蒙古族</option>
+                                                                                        <option>回族</option>
+                                                                                        <option>藏族</option>
+                                                                                        <option>维吾尔族</option>
+                                                                                        <option>苗族</option>
+                                                                                        <option>彝族</option>
+                                                                                        <option>壮族</option>
+                                                                                        <option>布依族</option>
+                                                                                        <option>朝鲜族</option>
+                                                                                        <option>满族</option>
+                                                                                        <option>侗族</option>
+                                                                                        <option>瑶族</option>
+                                                                                        <option>白族</option>
+                                                                                        <option>土家族</option>
+                                                                                        <option>哈尼族</option>
+                                                                                        <option>哈萨克族</option>
+                                                                                        <option>傣族</option>
+                                                                                        <option>黎族</option>
+                                                                                        <option>傈傈族</option>
+                                                                                        <option>佤族</option>
+                                                                                        <option>畲族</option>
+                                                                                        <option>高山族</option>
+                                                                                        <option>拉祜族</option>
+                                                                                        <option>水族</option>
+                                                                                        <option>东乡族</option>
+                                                                                        <option>纳西族</option>
+                                                                                        <option>景颇族</option>
+                                                                                        <option>柯尔克孜族</option>
+                                                                                        <option>土族</option>
+                                                                                        <option>达斡尔族</option>
+                                                                                        <option>仫佬族</option>
+                                                                                        <option>羌族</option>
+                                                                                        <option>布朗族</option>
+                                                                                        <option>撒拉族</option>
+                                                                                        <option>毛南族</option>
+                                                                                        <option>仡佬族</option>
+                                                                                        <option>锡伯族</option>
+                                                                                        <option>阿昌族</option>
+                                                                                        <option>普米族</option>
+                                                                                        <option>塔吉克族</option>
+                                                                                        <option>怒族</option>
+                                                                                        <option>乌孜别克族</option>
+                                                                                        <option>俄罗斯族</option>
+                                                                                        <option>鄂温克族</option>
+                                                                                        <option>德昂族</option>
+                                                                                        <option>保安族</option>
+                                                                                        <option>裕固族</option>
+                                                                                        <option>京族</option>
+                                                                                        <option>塔塔尔族</option>
+                                                                                        <option>独龙族</option>
+                                                                                        <option>鄂伦春族</option>
+                                                                                        <option>赫哲族</option>
+                                                                                        <option>门巴族</option>
+                                                                                        <option>珞巴族</option>
+                                                                                        <option>基诺族</option>
+                                                                                        <option>其他</option>
+                                                                                        <option>外国民族</option>
+
+                                                                                </select>
+                                                                            </div>
+                                                                    </div>
+
+                                                                    <div style="margin-top: 10px;">
+                                                                            <div class="form-group">
+                                                                                <label class="">出生地：</label>
+                                                                                <input value="{{ user.BornPlace }}" name="Bornplace" class="form-control" type="text">
+                                                                            </div>
+                                                                    </div>
+
+                                                                    <div style="margin-top: 10px;">
+                                                                            <div class="form-group">
+                                                                                <label class="">党籍编号：</label>
+                                                                                <input  name="partynum" value="{{ user.PartyDocuNum }}"class="form-control" type="text" >
+                                                                            </div>
+                                                                    </div>
+
+                                                                    <div style="margin-top: 10px;">
+                                                                            <div class="form-group">
+                                                                                <label class="">联系方式：</label>
+                                                                                <input value="{{ user.MobilePhone }}" name="phonenum" class="form-control" type="text">
+                                                                            </div>
+                                                                    </div>
+
+
+                                                                </div>
+
+                                                                <div class="col-md-3">
+                                                                        <div style="margin-top: 10px;">
+                                                                            <div class="form-group">
+                                                                                <label class="">曾用名：</label>
+                                                                                <input value="{{ user.nameUsed }}"  name="nameused" class="form-control" type="text">
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div style="margin-top: 10px;">
+                                                                            <div class="form-group">
+                                                                                <label class="">籍贯：</label>
+                                                                                <input value="{{ user.NativePlace }}" name="nativeplace" class="form-control" type="text" placeholder="例如 湖北省武汉市">
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div style="margin-top: 10px;">
+                                                                            <div class="form-group">
+                                                                                <label class="">出生日期：</label>
+                                                                                <input value="{{ user.BornDate }}" name="borndate" class="form-control" type="text" placeholder="例如 1998/03/22">
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div style="margin-top: 10px;">
+                                                                            <div class="form-group">
+                                                                                <label class="">所在支部：</label>
+                                                                                <input value="{{ user.BranchParty }}" name="branchname" class="form-control" type="text" placeholder="例如 武汉市武昌区九支部">
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div style="margin-top: 10px;">
+                                                                            <div class="form-group">
+                                                                                <label class="">邮箱：</label>
+                                                                                <input value="{{ user.email }}" name="email" class="form-control" type="text" placeholder="例如 123456789@qq.com">
+                                                                            </div>
+                                                                        </div>
+
+
+                                                                </div>
+
+                                                                <div class="col-md-3">
+
+                                                                        <div style="margin-top: 10px;">
+                                                                                <div class="form-group">
+                                                                                    <label class="">宗教：</label>
+                                                                                    <select name="religious" class="form-control">
+                                                                                            <option selected="selected">{{ user.religious }}</option>
+                                                                                            <option>基督教</option>
+                                                                                            <option>伊斯兰教</option>
+                                                                                            <option>佛教</option>
+                                                                                            <option>其他宗教</option>
+                                                                                            <option>无</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div style="margin-top: 10px;">
+                                                                                <div class="form-group">
+                                                                                    <label  class="">身份证号：</label>
+                                                                                    <input value="{{ user.IDCardNum }}" name="IDnum" class="form-control" type="text">
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div style="margin-top: 10px;">
+                                                                                <div class="form-group">
+                                                                                    <label class="">支部号：</label>
+                                                                                    <select  value="{{ user.BranchPartyNum }}" name="branchnnum" class="form-control">
+                                                                                            <option selected="selected">{{ user.BranchPartyNum }}</option>
+                                                                                            <option>1</option>
+                                                                                            <option>2</option>
+                                                                                            <option>3</option>
+                                                                                            <option>4</option>
+                                                                                            <option>5</option>
+                                                                                            <option>6</option>
+                                                                                            <option>7</option>
+                                                                                            <option>8</option>
+                                                                                            <option>9</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                        </div>
+
+
+
+
+                                                                </div>
+
+                                                                <div class="col-md-3">
+                                                                    <div style="margin-top: 10px;">
+                                                                            <div class="form-group">
+                                                                                <input name="photo" type="file" placeholder="请上传图片">
+                                                                            </div>
+                                                                    </div>
+                                                                    <div style="margin: 20px">
+                                                                        <img src="{{ MEDIA_URL }}{{ user.img }}" style="width: 100%">
+                                                                    </div>
+                                                                </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+
+                                            <!--学历信息-->
+                                            <div class="panel panel-info">
+                                                    <div class="panel-heading" id="edu-info">学历信息</div>
+                                                    <div class="panel-body">
+                                                            <table class="table table-bordered table-striped" style="text-align: center;">
+                                                                <tr>
+                                                                    <th style="text-align: center;">教育类型</th>
+                                                                    <th style="text-align: center;">院校</th>
+                                                                    <th style="text-align: center;">专业</th>
+                                                                    <th style="text-align: center;">入学时间</th>
+                                                                    <th style="text-align: center;">毕业时间</th>
+                                                                    <th style="text-align: center;">学历</th>
+                                                                    <th style="text-align: center;">学位</th>
+                                                                </tr>
+                                                                {% for oneEdu in user.education_set.all %}
+                                                                <tr>
+                                                                    <td>
+                                                                         <div class="form-group">
+                                                                             <select name="edutype{{ forloop.counter }}" class="form-control">
+                                                                                 <option selected="selected">{{ oneEdu.EduType }}</option>
+                                                                                 <option>全日制教育</option>
+                                                                                 <option>在职教育</option>
+                                                                             </select>
+                                                                         </div>
+                                                                    </td>
+
+                                                                    <td>
+                                                                        <input value="{{ oneEdu.id }}" name="Eduid{{   forloop.counter }}" type="text" style="display: none">
+                                                                        <div class="form-group">
+                                                                        <input value="{{ oneEdu.college }}" name="school{{ forloop.counter }}" class = "form-control" type="text">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                       <div class="form-group">
+                                                                        <input value="{{ oneEdu.major }}" name="major{{ forloop.counter }}" class = "form-control" type="text">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                        <input value="{{ oneEdu.ComeIntoSchoolDate }}"name="edustartdate{{ forloop.counter }}" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_12">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                        <input value="{{ oneEdu.GraduateDate }} "name="eduenddate{{ forloop.counter }}" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_13">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <select  name="eduexprience{{ forloop.counter }}" class="form-control">
+                                                                                <option selected="selected">{{ oneEdu.EduExperience }}</option>
+                                                                                <option>初中及以下</option>
+                                                                                <option>高中</option>
+                                                                                <option>专科</option>
+                                                                                <option>本科</option>
+                                                                                <option>研究生硕士</option>
+                                                                                <option>博士</option>
+                                                                                <option>博士后</option>
+                                                                                <option>其他</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                             <select name="degree{{ forloop.counter }}" class="form-control">
+                                                                                    <option selected="selected">{{ oneEdu.EduDegree }}</option>
+                                                                                    <option>XX学学士</option>
+                                                                                    <option>XX学硕士</option>
+                                                                                    <option>XX学博士</option>
+                                                                                    <option>XX学博士后</option>
+                                                                                    <option>其他</option>
+                                                                                </select>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                {% endfor %}
+                                                                <tr>
+                                                                    <td>
+                                                                         <div class="form-group">
+                                                                             <select name="edutype0" class="form-control">
+                                                                                 <option>全日制教育</option>
+                                                                                 <option>在职教育</option>
+                                                                             </select>
+                                                                         </div>
+                                                                    </td>
+
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                        <input name="school0" value="新添加的项请写在这一行" class = "form-control" type="text">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                       <div class="form-group">
+                                                                        <input name="major0" class = "form-control" type="text">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                        <input name="edustartdate0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_12">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                        <input name="eduenddate0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_13">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <select name="eduexprience0" class="form-control">
+                                                                                <option>初中及以下</option>
+                                                                                <option>高中</option>
+                                                                                <option>专科</option>
+                                                                                <option>本科</option>
+                                                                                <option>研究生硕士</option>
+                                                                                <option>博士</option>
+                                                                                <option>博士后</option>
+                                                                                <option>其他</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                             <select name="degree0" class="form-control">
+                                                                                    <option></option>
+                                                                                    <option>XX学学士</option>
+                                                                                    <option>XX学硕士</option>
+                                                                                    <option>XX学博士</option>
+                                                                                    <option>XX学博士后</option>
+                                                                                    <option>其他</option>
+                                                                                </select>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+
+                                                            </table>
+                                                    </div>
+                                            </div>
+
+                                            <!--工作单位及地址-->
+                                            <div class="panel panel-danger">
+                                                    <div class="panel-heading" id="addr-info">工作单位及地址</div>
+                                                    <div class="panel-body">
+                                                    {% if user.work_set.all %}
+                                                        {% for oneWork in user.work_set.all  %}
+                                                            <div class="row">
+                                                                    <div class="col-md-3">
+                                                                        <div style="margin-top: 10px;">
+                                                                            <div class="form-group">
+                                                                                <input value="{{ oneWork.id }}" name="workunitid{{ forloop.counter }}" type="text" style="display: none;">
+                                                                                <label class="">工作单位：</label>
+                                                                                <input value="{{ oneWork.WorkUnit }}" name="workunit" type="text" class="form-control">
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div style="margin-top: 10px;">
+                                                                                <div class="form-group">
+                                                                                    <label class="" style="float: left; margin-right: 10px;">工作单位地址：</label>
+                                                                                    <input value="{{ oneWork.WorkUnitAddr }}" name="workunitaddr" type="text" class="form-control">
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div style="margin-top: 10px;">
+                                                                                <div class="form-group">
+                                                                                    <label class="">家庭地址：</label>
+                                                                                    <input value="{{ oneWork.HomeAddr }}" name="familyaddr" class="form-control" type="text">
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div style="margin-top: 10px;">
+                                                                                <div class="form-group">
+                                                                                    <label class="">专长：</label>
+                                                                                    <input value="{{ oneWork.specialty }}"  name="special" class="form-control" type="text">
+                                                                                </div>
+                                                                        </div>
+
+
+                                                                    </div>
+
+                                                                    <div class="col-md-3">
+                                                                            <div style="margin-top: 10px;">
+                                                                                <div class="form-group">
+                                                                                    <label class="">工作职务性质：</label>
+                                                                                    <input  value="{{ oneWork.PropertyOfWorkUnit }}"  name="workjob" class="form-control" type="text">
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div style="margin-top: 10px;">
+                                                                                    <div class="form-group">
+                                                                                        <label class="">工作电话：</label>
+                                                                                        <input value="{{ oneWork.WorkPhone }}" name="workphone" class="form-control" type="text">
+                                                                                    </div>
+                                                                            </div>
+
+                                                                            <div style="margin-top: 10px;">
+                                                                                    <div class="form-group">
+                                                                                        <label class="">家庭电话：</label>
+                                                                                        <input value="{{ oneWork.HomePhone }}" name="familyphone" class="form-control" type="text">
+                                                                                    </div>
+                                                                            </div>
+
+                                                                            <div style="margin-top: 10px;">
+                                                                                    <div class="form-group">
+                                                                                        <label class="">享受何种津贴：</label>
+                                                                                        <select name="WelfareLevel" class="form-control">
+                                                                                            <option selected="selected"> {{ oneWork.WelfareLevel }} </option>
+                                                                                            <option>国务院</option>
+                                                                                            <option>省部别</option>
+                                                                                            <option>地市级</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                            </div>
+
+
+                                                                    </div>
+
+                                                                    <div class="col-md-3">
+
+                                                                            <div style="margin-top: 10px;">
+                                                                                    <div class="form-group">
+                                                                                        <label class="">职务性质：</label>
+                                                                                        <select name="workproperty" class="form-control">
+                                                                                            <option selected="selected"> {{ oneWork.PropertyOfWorkUnit }}</option>
+                                                                                            <option>部级，省级</option>
+                                                                                            <option>副部，副省级</option>
+                                                                                            <option>司，地，厅，局级</option>
+                                                                                            <option>副司，副地，副局，副厅级</option>
+                                                                                            <option>县，处级</option>
+                                                                                            <option>副县，副处级</option>
+                                                                                            <option>正科级</option>
+                                                                                            <option>副科级</option>
+                                                                                            <option>巡视员</option>
+                                                                                            <option>副巡视员</option>
+                                                                                            <option>调研员</option>
+                                                                                            <option>副调研员</option>
+                                                                                            <option>主任科员</option>
+                                                                                            <option>副主任科员</option>
+                                                                                            <option>科员级</option>
+                                                                                            <option>办事员</option>
+                                                                                            <option>未定级别</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                            </div>
+
+                                                                            <div style="margin-top: 10px;">
+                                                                                    <div class="form-group">
+                                                                                        <label class="">工作地址邮编：</label>
+                                                                                        <input value="{{ oneWork.WorkPostcode }}" name="workaddremailnum" class="form-control" type="text">
+                                                                                    </div>
+                                                                            </div>
+
+                                                                            <div style="margin-top: 10px;">
+                                                                                    <div class="form-group">
+                                                                                        <label class="">家庭地址邮编：</label>
+                                                                                        <input value="{{ oneWork.WorkPostcode }}"  name="familyaddremailnum" class="form-control" type="text">
+                                                                                    </div>
+                                                                            </div>
+                                                                    </div>
+
+                                                                    <diV class="col-md-3">
+                                                                        <div style="margin-top: 10px;">
+                                                                                <div class="form-group">
+
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div style="margin-top: 10px;">
+                                                                                <div class="form-group">
+                                                                                    <label class="">选择通信地址：</label>
+                                                                                    <select name="selectaddr" class="form-control">
+                                                                                        <option selected="selected">{{ oneWork.ContactAddrType }}</option>
+                                                                                        <option>工作地址</option>
+                                                                                        <option>家庭地址</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div style="margin-top: 10px;">
+                                                                                <div class="form-group">
+
+                                                                                </div>
+                                                                        </div>
+                                                                    </diV>
+                                                            </div>
+                                                        {% endfor %}
+                                                    {% else %}
+                                                             <div class="row">
+                                                                    <div class="col-md-3">
+                                                                        <div style="margin-top: 10px;">
+                                                                            <div class="form-group">
+                                                                                <label class="">工作单位：</label>
+                                                                                <input name="workunit" type="text" class="form-control">
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div style="margin-top: 10px;">
+                                                                                <div class="form-group">
+                                                                                    <label class="" style="float: left; margin-right: 10px;">工作单位地址：</label>
+                                                                                    <input name="workunitaddr" type="text" class="form-control">
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div style="margin-top: 10px;">
+                                                                                <div class="form-group">
+                                                                                    <label class="">家庭地址：</label>
+                                                                                    <input name="familyaddr" class="form-control" type="text">
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div style="margin-top: 10px;">
+                                                                                <div class="form-group">
+                                                                                    <label class="">专长：</label>
+                                                                                    <input name="special" class="form-control" type="text">
+                                                                                </div>
+                                                                        </div>
+
+
+                                                                    </div>
+
+                                                                    <div class="col-md-3">
+                                                                            <div style="margin-top: 10px;">
+                                                                                <div class="form-group">
+                                                                                    <label class="">工作职务性质：</label>
+                                                                                    <input name="workjob" class="form-control" type="text">
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div style="margin-top: 10px;">
+                                                                                    <div class="form-group">
+                                                                                        <label class="">工作电话：</label>
+                                                                                        <input name="workphone" class="form-control" type="text">
+                                                                                    </div>
+                                                                            </div>
+
+                                                                            <div style="margin-top: 10px;">
+                                                                                    <div class="form-group">
+                                                                                        <label class="">家庭电话：</label>
+                                                                                        <input name="familyphone" class="form-control" type="text">
+                                                                                    </div>
+                                                                            </div>
+
+                                                                            <div style="margin-top: 10px;">
+                                                                                    <div class="form-group">
+                                                                                        <label class="">享受何种津贴：</label>
+                                                                                        <select name="WelfareLevel" class="form-control">
+                                                                                            <option></option>
+                                                                                            <option>国务院</option>
+                                                                                            <option>省部别</option>
+                                                                                            <option>地市级</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                            </div>
+
+
+                                                                    </div>
+
+                                                                    <div class="col-md-3">
+
+                                                                            <div style="margin-top: 10px;">
+                                                                                    <div class="form-group">
+                                                                                        <label class="">职务性质：</label>
+                                                                                        <select name="workproperty" class="form-control">
+                                                                                            <option></option>
+                                                                                            <option>部级，省级</option>
+                                                                                            <option>副部，副省级</option>
+                                                                                            <option>司，地，厅，局级</option>
+                                                                                            <option>副司，副地，副局，副厅级</option>
+                                                                                            <option>县，处级</option>
+                                                                                            <option>副县，副处级</option>
+                                                                                            <option>正科级</option>
+                                                                                            <option>副科级</option>
+                                                                                            <option>巡视员</option>
+                                                                                            <option>副巡视员</option>
+                                                                                            <option>调研员</option>
+                                                                                            <option>副调研员</option>
+                                                                                            <option>主任科员</option>
+                                                                                            <option>副主任科员</option>
+                                                                                            <option>科员级</option>
+                                                                                            <option>办事员</option>
+                                                                                            <option>未定级别</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                            </div>
+
+                                                                            <div style="margin-top: 10px;">
+                                                                                    <div class="form-group">
+                                                                                        <label class="">工作地址邮编：</label>
+                                                                                        <input name="workaddremailnum" class="form-control" type="text">
+                                                                                    </div>
+                                                                            </div>
+
+                                                                            <div style="margin-top: 10px;">
+                                                                                    <div class="form-group">
+                                                                                        <label class="">家庭地址邮编：</label>
+                                                                                        <input name="familyaddremailnum" class="form-control" type="text">
+                                                                                    </div>
+                                                                            </div>
+                                                                    </div>
+
+                                                                    <diV class="col-md-3">
+                                                                        <div style="margin-top: 10px;">
+                                                                                <div class="form-group">
+
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div style="margin-top: 10px;">
+                                                                                <div class="form-group">
+                                                                                    <label class="">选择通信地址：</label>
+                                                                                    <select name="selectaddr" class="form-control">
+                                                                                        <option></option>
+                                                                                        <option>工作地址</option>
+                                                                                        <option>家庭地址</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div style="margin-top: 10px;">
+                                                                                <div class="form-group">
+
+                                                                                </div>
+                                                                        </div>
+                                                                    </diV>
+                                                            </div>
+                                                    {% endif %}
+                                                    </div>
+                                            </div>
+
+                                            <!--任职信息-->
+                                            <div class="panel panel-primary">
+                                                <div class="panel-heading" id="job-info">任职信息</div>
+                                                <div class="panel-body">
+                                                        <div class="row">
+                                                            <table class="table table-bordered table-striped" style="text-align: center;">
+                                                                <tr>
+                                                                    <th style="text-align: center;">任职类型</th>
+                                                                    <th style="text-align: center;">起始日期</th>
+                                                                    <th style="text-align: center;">终止日期</th>
+                                                                    <th style="text-align: center;">届次</th>
+                                                                    <th style="text-align: center;">任职单位及职务</th>
+                                                                </tr>
+                                                                {% for oneposi in user.positionsincepast_set.all %}
+                                                                <tr>
+                                                                    <td>
+                                                                         <select name="selectposition{{ forloop.counter}}" class="form-control">
+                                                                            <option>民革</option>
+                                                                            <option>人大</option>
+                                                                            <option>政协</option>
+                                                                            <option>其它社会职责</option>
+                                                                        </select>
+                                                                    </td>
+
+                                                                    <td>
+                                                                        <input name="positionid{{ forloop.counter }}" value="{{ oneposi.id }}" type="text" style="display: none">
+                                                                        <input name="positionstartdate{{ forloop.counter }}" class = "form-control" type="text" value="{% if oneposi.StartDate %}{{ oneposi.StartDate}}{% else %} }}2012-05-15{% endif %}" id="datetimepicker_3">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input name="positionenddate{{ forloop.counter }}" class = "form-control" type="text" value="{% if oneposi.EndDate %}{{ oneposi.EndDate}}{% else %} }}2012-05-15{% endif %}" id="datetimepicker_4">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input value="{{ oneposi.Which }}" name="positionwhich{{ forloop.counter }}" type="text" class="form-control">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input value="{{ oneposi.department }}" name="positionworkdetail{{ forloop.counter }}" type="text" class="form-control">
+                                                                    </td>
+                                                                </tr>
+                                                                {% endfor %}
+                                                              <tr>
+                                                                    <td>
+                                                                         <select name="selectposition0"  class="form-control">
+                                                                             <option disabled="disabled" selected>新加项写入此行</option>
+                                                                            <option>民革</option>
+                                                                            <option>人大</option>
+                                                                            <option>政协</option>
+                                                                            <option>其它社会职责</option>
+                                                                        </select>
+                                                                    </td>
+
+                                                                    <td>
+                                                                        <input name="positionstartdate0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_3">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input name="positionenddate0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_4">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input name="positionwhich0" type="text" class="form-control">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input name="positionworkdetail0"   type="text" class="form-control">
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                </div>
+                                            </div>
+
+                                            <!--简历信息-->
+                                            <div class="panel panel-warning">
+                                                <div class="panel-heading" id="resume-info">简历信息</div>
+                                                <div class="panel-body">
+                                                        <div class="row">
+                                                            <table class="table table-bordered table-striped" style="text-align: center;">
+                                                                <tr>
+                                                                    <th style="text-align: center;">起始日期</th>
+                                                                    <th style="text-align: center;">终止日期</th>
+                                                                    <th style="text-align: center;">所在地、工作单位、职务</th>
+                                                                </tr>
+                                                                {% for oneres in user.resume_set.all %}
+                                                                <tr>
+                                                                    <td>
+                                                                        <input  value="{{ oneres.id }}" name="resumeid{{ forloop.counter }}" class = "form-control" type="text" style="display: none;">
+                                                                        <input  value="{{ oneres.StartDate }}" name="resumestartdate{{ forloop.counter }}" class = "form-control" type="text"  id="datetimepicker_5">
+                                                                    </td>
+
+                                                                    <td>
+                                                                        <input value="{{ oneres.EndDate }}" name="resumeenddate{{ forloop.counter }}" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_6">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input value="{{ oneres.department }}" name="resumepositiondetail{{ forloop.counter }}" class="form-control" type="text" >
+                                                                    </td>
+                                                                </tr>
+                                                                {% endfor %}
+                                                            <tr>
+                                                                    <td>
+                                                                        <input name="resumestartdate0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_5">
+                                                                    </td>
+
+                                                                    <td>
+                                                                        <input name="resumeenddate0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_6">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input name="resumepositiondetail0" class="form-control" type="text" >
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    <div class="row">
+                                                    <div class=" col-md-offset-10">
+                                                        <input class="btn btn-primary" value="添加" style="width: 80px">
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!--获奖成就信息信息-->
+                                                                                       <!--获奖成就信息信息-->
+                                            <div class="panel panel-success">
+                                                <div class="panel-heading" id="reward-info">获奖成就信息</div>
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <table class="table table-bordered table-striped" style="text-align: center;">
+                                                            <tr>
+                                                                <th style="text-align: center;">获奖时间</th>
+                                                                <th style="text-align: center;">获奖级别</th>
+                                                                <th style="text-align: center;">主办单位</th>
+                                                                <th style="text-align: center;">获奖情况</th>
+                                                            </tr>
+                                                            {% for oneAward in user.awardinfo_set.all %}
+                                                            <tr>
+                                                                <td>
+                                                                    <input  value="{{ oneAward.id }}" name="Awardid{{ forloop.counter }}" class = "form-control" type="text" style="display:none;">
+                                                                    <input  value="{{ oneAward.AwardDate }}" name="AwardTime{{ forloop.counter }}" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_7">
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <select class="form-control" name="AwardGrade{{ forloop.counter }}">
+                                                                            <option>{{ oneAward.AwardLevel }}</option>
+                                                                            <option>国家级</option>
+                                                                            <option>省部级</option>
+                                                                            <option>地市级</option>
+                                                                            <option>县市级</option>
+                                                                            <option>其他级别</option>
+                                                                            <option>民革</option>
+                                                                            <option>中央</option>
+                                                                            <option>省级</option>
+                                                                            <option>地市级</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input  value="{{ oneAward.HoldWorkUnit }}"  class="form-control" type="text" name="AwardUnit{{ forloop.counter }}" >
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input value="{{ oneAward.AwardDetail }}" class="form-control" type="text" name="AwardDetail{{ forloop.counter }}">
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor%}
+                                                            <tr>
+                                                                <td>
+                                                                    <input name="AwardTime0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_7">
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <select class="form-control" name="AwardGrade0">
+                                                                            <option disabled="disabled" selected>新加项写入此行</option>
+                                                                            <option>国家级</option>
+                                                                            <option>省部级</option>
+                                                                            <option>地市级</option>
+                                                                            <option>县市级</option>
+                                                                            <option>其他级别</option>
+                                                                            <option>民革</option>
+                                                                            <option>中央</option>
+                                                                            <option>省级</option>
+                                                                            <option>地市级</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input class="form-control" type="text" name="AwardUnit0" >
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input class="form-control" type="text" name="AwardDetail0">
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+
+                                                        </table>
+
+
+
+                                                </div>
+                                            </div>
+
+                                            <!--所受处分情况-->
+                                            <div class="panel panel-info">
+                                                <div class="panel-heading" id="warnning-info">所受处分情况</div>
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <table class="table table-bordered table-striped" style="text-align: center;">
+
+                                                            <tr>
+                                                                <th style="text-align: center;">处分</th>
+                                                                <th style="text-align: center;">时间</th>
+                                                                <th style="text-align: center;">撤销情况</th>
+                                                            </tr>
+                                                            {% for onepunish in user.punish_set.all %}
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input value="{{ onepunish.id }}" name="punishid{{ forloop.counter }}" type="text" style="display: none">
+                                                                        <input value="{{ onepunish.PunishDate }}" class="form-control" type="text" name="punishDetails{{ forloop.counter }}">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input value="{{ onepunish.details }}"  name="punishDate{{ forloop.counter }}" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_8">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <select name="CancelDetail{{ forloop.counter }}" class="form-control">
+                                                                            <option selected="selected">{{ onepunish.CancelDetail }}</option>
+                                                                            <option>已撤销</option>
+                                                                            <option>未撤销</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            {% endfor%}
+                                                             <tr>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input class="form-control" type="text" name="punishDetails0">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input name="punishDate0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_8">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <select name="CancelDetail0" class="form-control">
+                                                                            <option disabled="disabled" selected>新加项写入此行</option>
+                                                                            <option>已撤销</option>
+                                                                            <option>未撤销</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+
+                                             <!--曾参加党培、团体情况-->
+                                             <div class="panel panel-danger">
+                                                <div class="panel-heading" id="party-info">曾参加党培、团体情况</div>
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <table class="table table-bordered table-striped" style="text-align: center;">
+                                                            <thead>
+                                                            	<th style="text-align: center;">名称</th>
+                                                                <th style="text-align: center;">地点</th>
+                                                                <th style="text-align: center;">介绍人</th>
+                                                                <th style="text-align: center;">职务</th>
+                                                                <th style="text-align: center;">起始时间</th>
+                                                                <th style="text-align: center;">现有无联系</th>
+                                                            </thead>>
+
+                                                            <tbody>
+                                                            {% for oneacti in user.activity_set.all %}
+                                                            	<tr>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input value="{{ oneacti.id }}" name="activityid{{ forloop.counter  }}" type="text"  style="display: none;">
+                                                                        <input value="{{ oneacti.ActivityName }}" name="activityName{{ forloop.counter }}" class="form-control" type="text">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input value="{{ oneacti.addr }}" name="addr{{ forloop.counter }}" class="form-control" type="text">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input value="{{ oneacti.introducer }}" name="introducer{{ forloop.counter }}" class="form-control" type="text">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input value="{{ oneacti.PositionOfIntroducer }}"  name="Position{{ forloop.counter }}" class="form-control" type="text">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input name="startDate{{ forloop.counter }}"class = "form-control" type="text" value="2012-05-15" id="datetimepicker_9">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <select name="Activity_IsLinkedNow{{ forloop.counter }}" class="form-control">
+                                                                            <option selected="selected">{{ oneacti.IsLinkedNow }}</option>
+                                                                            <option>是</option>
+                                                                            <option>否</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                          {% endfor %}
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input name="activityName0" class="form-control" type="text">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input name="addr0" class="form-control" type="text">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input name="introducer0"  value="新加入项写入此行" class="form-control" type="text">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input name="Position0" class="form-control" type="text">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input name="startDate0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_9">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div name="Activity_IsLinkedNow0" class="form-group">
+                                                                        <select class="form-control">
+                                                                            <option>是</option>
+                                                                            <option>否</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            </tbody>
+
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!--家庭成员情况-->
+                                            <div class="panel panel-primary">
+                                                <div class="panel-heading" id="family-info">家庭成员情况</div>
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <table class="table table-bordered table-striped" style="text-align: center;">
+                                                            <tr>
+                                                                <th style="text-align: center;">姓名</th>
+                                                                <th style="text-align: center;">关系</th>
+                                                                <th style="text-align: center;">出生年月</th>
+                                                                <th style="text-align: center;">文化程度</th>
+                                                                <th style="text-align: center;">政治面貌</th>
+                                                                <th style="text-align: center;">工作单位及职务</th>
+                                                            </tr>
+                                                            {% for onemem in user.familymember_set.all %}
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input value="{{ onemem.id }}" name="memberid{{ forloop.counter }}" style="display:none;" >
+                                                                        <input value="{{ onemem.name }}" name="memberName{{ forloop.counter }}" class="form-control" type="text">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input value="{{ onemem.relation }}" name="memrelation{{ forloop.counter }}" class="form-control" type="text">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input value="{{ onemem.BornDate }}" name="memBornDate{{ forloop.counter }}" class="form-control" type="text" value="2012-05-15" id="datetimepicker_10">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <select name="EduLevel{{ forloop.counter }}" class="form-control">
+                                                                            <option selected="selected">{{ onemem.EducationLevel }}</option>
+                                                                            <option>初中及以下</option>
+                                                                            <option>高中</option>
+                                                                            <option>专科</option>
+                                                                            <option>本科</option>
+                                                                            <option>研究生硕士</option>
+                                                                            <option>博士</option>
+                                                                            <option>博士后</option>
+                                                                            <option>其他</option>
+
+                                                                        </select>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input  value="{{ onemem.PoliticalIdentity }}" name="memPoliticalIdentity{{ forloop.counter }}" class="form-control" type="text">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input  value="{{ onemem.DepartmentPosition }}" name="memDepartmentPosition{{ forloop.counter }}" class="form-control" type="text">
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            {% endfor %}
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input name="memberName0" class="form-control" type="text">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input name="memrelation0" class="form-control" type="text">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input name="memBornDate0" class="form-control" type="text" value="2012-05-15" id="datetimepicker_10">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <select name="EduLevel0" class="form-control">
+                                                                            <option></option>
+                                                                            <option>初中及以下</option>
+                                                                            <option>高中</option>
+                                                                            <option>专科</option>
+                                                                            <option>本科</option>
+                                                                            <option>研究生硕士</option>
+                                                                            <option>博士</option>
+                                                                            <option>博士后</option>
+                                                                            <option>其他</option>
+
+                                                                        </select>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input name="memPoliticalIdentity0" value="新加入项写入此行" class="form-control" type="text">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="form-group">
+                                                                        <input name="memDepartmentPosition0" class="form-control" type="text">
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                             <!--社会关系及民革特色关系-->
+                                            <div class="panel panel-warning">
+                                                <div class="panel-heading" id="social-info">社会关系及民革特色关系</div>
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <table class="table table-bordered table-striped" style="text-align: center;">
+                                                            <tr>
+                                                                <th style="text-align: center;">关系</th>
+                                                                <th style="text-align: center;">姓名</th>
+                                                                <th style="text-align: center;">出生年月</th>
+                                                                <th style="text-align: center;">文化程度</th>
+                                                                <th style="text-align: center;">政治面貌</th>
+                                                                <th style="text-align: center;">工作单位及职务</th>
+                                                                <th style="text-align: center;">现有无联系</th>
+                                                            </tr>
+                                                            {% for onerela in user.mingerelation_set.all %}
+                                                            <tr>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input value="{{ onerela.id }}" name="relationid{{ forloop.counter }}" type="text" style="display: none;">
+                                                                            <input value="{{ onerela.relation }}" name="relation{{ forloop.counter }}" class="form-control" type="text">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input value="{{ onerela.name }}" name="relationName{{ forloop.counter }}" class="form-control" type="text">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input value="{{ onerela.BornDate }}" name="BornDate{{ forloop.counter }}" class="form-control" type="text" value="2012-05-15" id="datetimepicker_11">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <select name="EducationLevel{{ forloop.counter }}" class="form-control">
+                                                                                <option selected="selected">{{ onerela.EducationLevel }}</option>
+                                                                                <option>初中及以下</option>
+                                                                                <option>高中</option>
+                                                                                <option>专科</option>
+                                                                                <option>本科</option>
+                                                                                <option>研究生硕士</option>
+                                                                                <option>博士</option>
+                                                                                <option>博士后</option>
+                                                                                <option>其他</option>
+
+                                                                            </select>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input value="{{ onerela.PoliticalIdentity }}" name="PoliticalIdentity{{ forloop.counter }}" class="form-control" type="text">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input  value="{{ onerela.DepartmentPosition }}" name="DepartmentPosition{{ forloop.counter }}"class="form-control" type="text">
+                                                                        </div>
+                                                                    </td>
+
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                           <select name="IsLinkedNow{{ forloop.counter }}" class="form-control">
+                                                                               <option selected="selected">{{ onerela.IsLinkedNow }}</option>
+                                                                               <option>有</option>
+                                                                               <option>无</option>
+                                                                           </select>
+                                                                        </div>
+                                                                    </td>
+                                                            </tr>
+                                                            {% endfor %}
+
+                                                            <tr>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input name="relation0" class="form-control" type="text">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input name="relationName0" class="form-control" type="text">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input name="BornDate0" class="form-control" type="text" value="2012-05-15" id="datetimepicker_11">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <select name="EducationLevel0" class="form-control">
+                                                                                <option></option>
+                                                                                <option>初中及以下</option>
+                                                                                <option>高中</option>
+                                                                                <option>专科</option>
+                                                                                <option>本科</option>
+                                                                                <option>研究生硕士</option>
+                                                                                <option>博士</option>
+                                                                                <option>博士后</option>
+                                                                                <option>其他</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input name="PoliticalIdentity0" value="新加入项写入此行" class="form-control" type="text">
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                            <input name="DepartmentPosition0" class="form-control" type="text">
+                                                                        </div>
+                                                                    </td>
+
+                                                                    <td>
+                                                                        <div class="form-group">
+                                                                           <select name="IsLinkedNow0" class="form-control">
+                                                                               <option>有</option>
+                                                                               <option>无</option>
+                                                                           </select>
+                                                                        </div>
+                                                                    </td>
+                                                            </tr>
+
+
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-1 col-md-offset-5">
+                                                        <button type="submit" class="btn btn-primary">提交</button>
+                                                </div>
+
+                                                <div class="col-md-1 col-md-offset-1">
+                                                    <button type="submit" class="btn btn-primary">重置</button>
+                                                </div>
+
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="panel-footer">底部</div>
+                                </div>
+
+                    </div>
+            </div>
+            </div>
+        </div>
+
+        <div id="footer-sec" style="background:  rgba(0,0,0,0)">
+            Copyright &copy; 2016.Company name All rights reserved.
+        </div>
+    </div>
+
+</div>
+
+
+
+    <!-- /. ROW  -->
+
+
+<!-- /. FOOTER  -->
+    <!-- SCRIPTS -AT THE BOTOM TO REDUCE THE LOAD TIME-->
+    <!-- JQUERY SCRIPTS -->
+    <script src="{% static 'js/jquery-1.10.2.js' %}"></script>
+    <!-- BOOTSTRAP SCRIPTS -->
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <!-- METISMENU SCRIPTS -->
+    <script src="{% static 'js/jquery.metisMenu.js' %}"></script>
+    <!-- CUSTOM SCRIPTS -->
+    <script src="{% static 'js/custom.js' %}"></script>
+
+    <script src="{% static 'js/bootstrap-datetimepicker.min.js' %}"></script>
+
+    <script src="{% static 'js/bootstrap-datetimepicker.fr.js' %}"></script>
+
+    <script type="text/javascript">
+
+
+$.fn.datetimepicker.dates['zh-CN'] = {
+    days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
+    daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+    daysMin: ["日", "一", "二", "三", "四", "五", "六", "日"],
+    months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+    monthsShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+    today: "今天",
+    suffix: [],
+    meridiem: ["上午", "下午"]
+};
+        $('#datetimepicker_1').datetimepicker({
+            language:'zh-CN',
+            format: 'yyyy-mm-dd'
+        });
+
+        $('#datetimepicker_2').datetimepicker({
+            language:'zh-CN',
+            format: 'yyyy-mm-dd'
+        });
+
+        $('#datetimepicker_3').datetimepicker({
+            language:'zh-CN',
+            format: 'yyyy-mm-dd'
+        });
+
+        $('#datetimepicker_4').datetimepicker({
+            language:'zh-CN',
+            format: 'yyyy-mm-dd'
+        });
+
+        $('#datetimepicker_5').datetimepicker({
+            language:'zh-CN',
+            format: 'yyyy-mm-dd'
+        });
+
+        $('#datetimepicker_6').datetimepicker({
+            language:'zh-CN',
+            format: 'yyyy-mm-dd'
+        });
+
+        $('#datetimepicker_7').datetimepicker({
+            language:'zh-CN',
+            format: 'yyyy-mm-dd'
+        });
+
+        $('#datetimepicker_8').datetimepicker({
+            language:'zh-CN',
+            format: 'yyyy-mm-dd'
+        });
+
+        $('#datetimepicker_9').datetimepicker({
+            language:'zh-CN',
+            format: 'yyyy-mm-dd'
+        });
+
+        $('#datetimepicker_10').datetimepicker({
+            language:'zh-CN',
+            format: 'yyyy-mm-dd'
+        });
+
+        $('#datetimepicker_11').datetimepicker({
+            format: 'yyyy-mm-dd'
+        });
+
+        $('#datetimepicker_12').datetimepicker({
+            language:'zh-CN',
+            format: 'yyyy-mm-dd'
+        });
+
+        $('#datetimepicker_13').datetimepicker({
+            language:'zh-CN',
+            format: 'yyyy-mm-dd'
+        });
+
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,344 @@
+﻿
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>userlist</title>
+
+      {% load staticfiles %}
+    <!-- BOOTSTRAP STYLES-->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" />
+    <!-- FONTAWESOME STYLES-->
+    <link href="{% static 'css/font-awesome.css' %}" rel="stylesheet" />
+       <!--CUSTOM BASIC STYLES-->
+    <link href="{% static 'css/basic.css' %}" rel="stylesheet" />
+    <!--CUSTOM MAIN STYLES-->
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet" />
+    <!-- GOOGLE FONTS-->
+    <link href='' rel='stylesheet' type='text/css' />
+</head>
+<body>
+    <div id="wrapper">
+        <nav class="navbar navbar-default navbar-cls-top " role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">国民革命委员会</a>
+            </div>
+
+            <div class="header-right">
+
+                  <p>{{ user.username }},您好</p>
+
+            </div>
+        </nav>
+        <!-- /. NAV TOP  -->
+        <nav class="navbar-default navbar-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav" id="main-menu">
+                    <li>
+                        <div class="user-img-div">
+                            <img src="{% static 'img/user.png' %}" class="img-thumbnail" />
+                             <button class="btn bg-info"><a href="{% url 'logout' %}">退出</a></button>
+                            <div class="inner-text">
+                                {% if user.is_manager %} 管理员：{% else %}普通用户：{% endif %}{{ user.username }}
+                                <br />
+                                <small>登录时间 : {{ time }}</small>
+                            </div>
+                        </div>
+
+                    </li>
+
+
+                    <li>
+                        <a class="" href="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'index' %}"><i class="fa fa-circle-o "></i>民革简介 </a>
+
+                    </li>
+                    <li>
+                        <a href="{% url 'leader' %}"><i class="fa fa-circle-o "></i>领导班组</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'activity' %}"><i class="fa fa-circle-o "></i>活动风采 </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'addresslist' %}"><i class="fa fa-bug "></i>支部通信录</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'userinformation' %}?name={{ user.username }} "><i class="fa fa-bicycle "></i>个人信息中心</a>
+                    </li>
+                   {% if user.is_manager %}
+                       <li>
+                           <a href="{% url 'userlist' %}"><i class="fa fa-bicycle "></i>管理员入口</a>
+                        </li>
+                       {% else %}
+                        <li>
+                           <a href="{% url 'login' %}"><i class="fa fa-bicycle "></i>管理员入口</a>
+                       </li>
+                       {% endif %}
+
+
+
+                </ul>
+
+            </div>
+
+        </nav>
+        <!-- /. NAV SIDE  -->
+        <div id="page-wrapper">
+            <div id="page-inner">
+                <div class="row">
+                    <div class="row">
+                         {% if user.is_superuser %}
+                             <div class="col-md-4">
+                            <div class="main-box mb-pink">
+
+                                <a href="{% url 'user_manage' %}">
+                                    <h5>管理员入口</h5>
+                                </a>
+
+                            </div>
+                             </div>
+                         {% endif %}
+
+
+
+                    </div>
+
+
+                    <!--/.Chat Panel End-->
+                </div>
+                <div class="col-md-12">
+                    <h1 class="page-head-line">支部党员列表</h1>
+                    <form class="navbar-form" method="post" action="{% url 'search_userlist' %}">
+{% if not flag %}
+                        <div id="graphDisplay" class="row">
+                            <div class="col-md-6">
+                                    <div id="main_1" style="width: 700px;height:400px;"></div>
+                            </div>
+
+                            <div class="col-md-6">
+                                    <div id="main_2" style="width: 700px;height:200px;"></div>
+                                    <div style="height: 20px"></div>
+                                    <div id="main_3" style="width: 700px;height:250px;"></div>
+                            </div>
+                        </div>
+{% endif %}
+
+                       <div class="form-group">
+                            <input name="name" type="text" placeholder="名称" class="form-control">
+                            <button type="submit"  class="btn btn-success">  搜索  </button>
+                        </div>
+                        {% csrf_token %}
+                        <h1 class="page-subhead-line">{% if flag %}<strong>{{ msg }}</strong>{% endif %}&nbsp;根据姓名、手机号进行搜索</h1>
+
+                        <a class="btn btn-success" href="#1">  一支部</a>
+                        <a class="btn btn-warning" href="#2">  二支部</a>
+                        <a class="btn btn-info" href="#3">  三支部</a>
+                        <a class="btn btn-danger" href="#4">  四支部</a>
+                        <a class="btn btn-success bl-sm" href="#5">  五支部</a>
+                        <a class="btn btn-warning" href="#6">  六支部</a>
+                        <a class="btn btn-info" href="#7">  七支部</a>
+                        <a class="btn btn-danger" href="#8">  八支部</a>
+                        <a class="btn btn-success" href="#9">  九支部</a>
+                    </form>
+                </div>
+                {% for oneBranch in allConGroup %}
+                <div class="row" id="{{ forloop.counter }}">
+                    <div class="col-md-66">
+                        <!--    Context Classes  -->
+                        <div class="panel panel-default">
+
+                            <div class="panel-heading">
+                                武汉市武昌区&nbsp;{{ forloop.counter }}&nbsp;支部党员
+
+                            </div>
+
+
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table class="table  text-center table-striped table-bordered table-hover">
+                                        <thead>
+                                            <tr class="row">
+                                                <th class="col-md-1 text-center">姓名</th>
+                                                <th class="col-md-1 text-center">性别</th>
+                                                <th class="col-md-1 text-center">出生日期</th>
+                                                <th class="col-md-1 text-center">民族</th>
+
+                                                <th class="col-md-1 text-center">入革时间</th>
+                                                <th class="col-md-1 text-center">联系电话</th>
+                                                <th class="col-md-2 text-center">邮箱</th>
+                                                <th class="col-md-2 text-center">工作单位</th>
+                                                <th class="col-md-1 text-center">工作性质</th>
+                                                <th class="col-md-1 text-center">查看详细资料</th>
+
+
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for person in oneBranch %}
+                                            <tr class="">
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ person.name }}</td>
+                                                <td>{{ person.gender }}</td>
+                                                <td>{{ person.BornDate }}</td>
+                                                <td>{{ person.nation }}</td>
+
+
+                                                <td>{{ person.DateComeIntoMinGe }}</td>
+                                                <td>{{ person.MobilePhone }}</td>
+                                                <td>{{ person.qqNum }}</td>
+                                                <td>{{ person.WorkUnit }}</td>
+                                                <td>{{ person.PropertyOfWorkUnit }}</td>
+                                                {% if user.is_superuser %}
+                                                    <td><a href="{% url 'modifyinfo' %}?name={{ person.name }}"><button>修改</button></a></td>
+                                                {% else %}
+                                                    <td><a href="{% url 'userinformation' %}?name={{ person.name }}"><button>查看</button></a></td>
+                                                {% endif %}
+
+
+                                            </tr>
+                                            {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!--  end  Context Classes  -->
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+            <!-- /. ROW  -->
+            <!-- /. ROW  -->
+
+
+
+            <div id="footer-sec" style="background:  rgba(0,0,0,0)">
+                Copyright &copy; 2016.Company name All rights reserved.
+            </div>
+            <!-- /. FOOTER  -->
+          <!-- SCRIPTS -AT THE BOTOM TO REDUCE THE LOAD TIME-->
+             <!-- JQUERY SCRIPTS -->
+            <script src="{% static 'js/jquery-1.10.2.js'%}"></script>
+            <!-- BOOTSTRAP SCRIPTS -->
+            <script src="{% static 'js/bootstrap.js' %}"></script>
+            <!-- METISMENU SCRIPTS -->
+            <script src="{% static 'js/jquery.metisMenu.js' %}"></script>
+               <!-- CUSTOM SCRIPTS -->
+            <!-- CUSTOM SCRIPTS -->
+            <script src="{% static 'js/custom.js' %}"></script>
+
+            <script src="{% static 'js/echarts.min.js' %}"></script>
+
+        <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('main_1'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '支部年龄详情'
+                },
+                tooltip: {},
+                legend: {
+                    data:['人数']
+                },
+                xAxis: {
+                    data:['<=20岁','20-24','25-29','30-34','35-39','40-44','45-49','50-54','55-59','>=60岁']
+
+                },
+                yAxis: {},
+                series: [{
+                    name: '人数',
+                    type: 'bar',
+                    data:{{ allagelist2 }}
+                }]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        </script>
+
+        <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('main_2'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '支部人员男女详情'
+                },
+                tooltip: {},
+                legend: {
+                    data:['人数']
+                },
+                xAxis: {
+                    type:'value',
+                },
+                yAxis: {
+                    type:'category',
+                    data: ['男','女']
+                },
+                series: [{
+                    name: '人数',
+                    type: 'bar',
+                    data: {{ allgender }}
+                }]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        </script>
+
+        <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('main_3'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '支部人员学历详情'
+                },
+                tooltip: {},
+                legend: {
+                    data:['人数']
+                },
+                xAxis: {
+                    type:'value',
+                },
+                yAxis: {
+                    type:'category',
+                    data: ['高中及以下','专科','本科','硕士','博士']
+                },
+                series: [{
+                    name: '人数',
+                    type: 'bar',
+                    data: {{ alledelist2 }}
+                }]
+            };
+            $(document).ready(function(){
+              $("#graphDisplay").click(function(){
+              $("#graphDisplay").hide();
+              });
+              $("#show").click(function(){
+              $("p").show();
+              });
+            });
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        </script>
+
+</body>
+</html>

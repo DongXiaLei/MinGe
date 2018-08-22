@@ -1,0 +1,711 @@
+﻿{#{% load MEDIA_URL %}#}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>userinformation</title>
+
+    <!-- BOOTSTRAP STYLES-->
+    {% load staticfiles %}
+
+    <!-- BOOTSTRAP STYLES-->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" />
+    <!-- FONTAWESOME STYLES-->
+    <link href="{% static 'css/font-awesome.css' %}" rel="stylesheet" />
+       <!--CUSTOM BASIC STYLES-->
+    <link href="{% static 'css/basic.css' %}" rel="stylesheet" />
+    <!--CUSTOM MAIN STYLES-->
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet" />
+    <!-- GOOGLE FONTS-->
+    <link href='' rel='stylesheet' type='text/css' />
+
+    <style>
+
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+        <nav class="navbar navbar-default navbar-cls-top " role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">国民革命委员会</a>
+            </div>
+
+            <div class="header-right">
+
+                  <p>{{ user.username }},您好</p>
+
+            </div>
+        </nav>
+        <!-- /. NAV TOP  -->
+        <nav class="navbar-default navbar-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav" id="main-menu">
+                    <li>
+                        <div class="user-img-div">
+                            <img src="{% static 'img/user.png' %}" class="img-thumbnail" />
+                             <button class="btn bg-info"><a href="{% url 'logout' %}">退出</a></button>
+                            <div class="inner-text">
+                               {% if user.is_manager %} 管理员：{% else %}普通用户：{% endif %}{{ user.username }}
+                                <br />
+                                <small>登录时间 : {{ time }}</small>
+                            </div>
+                        </div>
+
+                    </li>
+
+
+                    <li>
+                        <a class="" href="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'index' %}"><i class="fa fa-circle-o "></i>民革简介 </a>
+
+                    </li>
+                    <li>
+                        <a href="{% url 'leader' %}"><i class="fa fa-circle-o "></i>领导班组</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'activity' %}"><i class="fa fa-circle-o "></i>活动风采 </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'addresslist' %}"><i class="fa fa-bug "></i>支部通信录</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'userinformation' %}?name={{ user.username }}"><i class="fa fa-bicycle "></i>个人信息入口</a>
+                    </li>
+                    {% if user.is_manager %}
+                       <li>
+                           <a href="{% url 'userlist' %}"><i class="fa fa-bicycle "></i>管理员入口</a>
+                        </li>
+                       {% else %}
+                        <li>
+                           <a href="{% url 'login' %}"><i class="fa fa-bicycle "></i>管理员入口</a>
+                       </li>
+                       {% endif %}
+
+
+
+                </ul>
+
+            </div>
+
+        </nav>
+        <!-- /. NAV SIDE  -->
+        <div id="page-wrapper"  style="font-family: 'Open Sans', Courier, monospace; font-size: 12px;">
+            <div id="page-inner">
+
+                <div class="col-md-12">
+                    <h1 class="page-head-line">个人详细信息</h1>
+                    <h1 class="page-subhead-line">加 * 的为必填项</h1>
+
+                    <a class="btn btn-success" href="#basic-info">基本信息</a>
+                    <a class="btn btn-warning" href="#edu-info"> 学历信息</a>
+                    <a class="btn btn-info" href="#addr-info">单位地址</a>
+                    <a class="btn btn-danger" href="#job-info">任职信息</a>
+                    <a class="btn btn-success bl-sm" href="#resume-info">简历信息</a>
+                    <a class="btn btn-warning" href="#reward-info">获奖信息</a>
+                    <a class="btn btn-info" href="#warnning-info">处分信息</a>
+                    <a class="btn btn-danger" href="#party-info">党派团体</a>
+                    <a class="btn btn-success" href="#family-info">家庭成员</a>
+                    <a class="btn btn-success" href="#social-info">社会关系</a>
+                    <a href="" class="btn  btn-lg">
+
+
+
+                        <br>
+                    </a>
+                    <br>
+                    {% if user.is_superuser %}
+                        <div style="margin-left: 300px">
+                            <a href="{% url 'modifyinfo' %}?id={{ userinfo.id }}" class="btn btn-success btn-lg ">修改信息</a>
+                            <a href="{% url 'deleteinfo' %}?id={{ uesrinfo.id }}" class="btn btn-info btn-lg ">删除信息</a>
+                            <a href="{% url 'userinformation_add' %}" class="btn btn-primary btn-lg ">新增信息</a>
+                        </div>
+                    <h1 class="page-subhead-line"> </h1>
+                    {% endif %}
+                    <br>
+                </div>
+
+                <div class="col-md-12">
+
+                     <!--信息总表-->
+                 <div class="row">
+                        <div id = "person-info">
+
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading">个人信息</div>
+                                        <div class="panel-body">
+                                            <form class="form-inline">
+
+                                                <!--基本信息-->
+                                                <div class="panel panel-success">
+                                                    <div class="panel-heading" id="basic-info">基本信息</div>
+                                                    <div class="panel-body">
+                                                            <div class="row">
+                                                                    <div class="col-md-3">
+                                                                        <div>
+                                                                            <div class="form-group">
+                                                                                <label class="">姓名：</label>
+                                                                                <label class="form-control">{{ userinfo.name }}</label>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">民族：</label>
+                                                                                    <label class="form-control">{{ userinfo.nation }}</label>
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">出生地：</label>
+                                                                                    <label class="form-control">{{ userinfo.BornPlace }}</label>
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">党籍编号：</label>
+                                                                                    <label class="form-control">{{ userinfo.PartyDocuNum }}</label>
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">联系方式：</label>
+                                                                                    <label class="form-control">{{ userinfo.MobilePhone }}</label>
+                                                                                </div>
+                                                                        </div>
+
+
+                                                                    </div>
+
+                                                                    <div class="col-md-3">
+                                                                            <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">曾用名：</label>
+                                                                                    <label class="form-control">{{ userinfo.nameUsed }}</label>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div>
+                                                                                    <div class="form-group">
+                                                                                        <label class="">籍贯：</label>
+                                                                                        <label class="form-control">{{ userinfo.NativePlace }}</label>
+                                                                                    </div>
+                                                                            </div>
+
+                                                                            <div>
+                                                                                    <div class="form-group">
+                                                                                        <label class="">出生日期：</label>
+                                                                                        <label class="form-control">{{ userinfo.BornDate }}</label>
+                                                                                    </div>
+                                                                            </div>
+
+                                                                            <div>
+                                                                                    <div class="form-group">
+                                                                                        <label class="">所在支部：</label>
+                                                                                        <label class="form-control">{{ userinfo.BranchParty }}</label>
+                                                                                    </div>
+                                                                            </div>
+
+                                                                            <div>
+                                                                                    <div class="form-group">
+                                                                                        <label class="">邮箱：</label>
+                                                                                        <label class="form-control">{{ userinfo.email }}</label>
+                                                                                    </div>
+                                                                            </div>
+
+
+                                                                    </div>
+
+                                                                    <div class="col-md-3">
+
+                                                                            <div>
+                                                                                    <div class="form-group">
+                                                                                        <label class="">宗教：</label>
+                                                                                        <label class="form-control">{{ userinfo.religious }}</label>
+                                                                                    </div>
+                                                                            </div>
+
+                                                                            <div>
+                                                                                    <div class="form-group">
+                                                                                        <label class="">身份证号：</label>
+                                                                                        <label class="form-control">{{ userinfo.IDCardNum }}</label>
+                                                                                    </div>
+                                                                            </div>
+
+                                                                            <div>
+                                                                                    <div class="form-group">
+                                                                                        <label class="">支部号：</label>
+                                                                                        <label class="form-control">{{ userinfo.BranchPartyNum }}</label>
+                                                                                    </div>
+                                                                            </div>
+
+
+                                                                    </div>
+
+                                                                    <diV class="col-md-3">
+                                                                        <img style="width: 100px; height: 100px;" src="{{ MEDIA_URL }}{{ user.image }}">
+                                                                    </diV>
+                                                            </div>
+                                                    </div>
+                                                </div>
+
+                                                <!--学历信息-->
+                                                <div class="panel panel-success">
+                                                        <div class="panel-heading" id="edu-info">学历信息</div>
+                                                        <div class="panel-body">
+                                                            <table class="table table-hover">
+                                    <thead>
+                                        <tr style="height: 30px;">
+
+                                                <th >教育类型</th>
+                                                <th >院校</th>
+                                                <th >专业</th>
+                                                <th >入学时间</th>
+                                                <th >毕业时间</th>
+                                                <th >学历</th>
+                                                <th >学位</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for oneEdu in userinfo.education_set.all %}
+                                        <tr style="height: 30px;">
+                                                <td >{{ oneEdu.EduType }}</td>
+                                            <td>{{ oneEdu.major }}</td>
+                                                <td>{{ oneEdu.college }}</td>
+                                                <td>{{ oneEdu.ComeIntoSchoolDate }}</td>
+                                                <td>{{ oneEdu.GraduateDate }}</td>
+                                                <td>{{ oneEdu.EduExperience }}</td>
+                                                <td>{{ oneEdu.EduDegree }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                                               <!-- <div class="row">
+                                                                    <div class="col-md-3">
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">教育类型：</label>
+                                                                                    <label class="form-control">{{ userinfo.education_set.all }}</label>
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">教育类型：</label>
+                                                                                    <label class="form-control">xxx</label>
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">院校：</label>
+                                                                                    <label class="form-control">xxx</label>
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">专业：</label>
+                                                                                    <label class="form-control">xxx</label>
+                                                                                </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-3">
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">入学时间：</label>
+                                                                                    <label class="form-control">xxx</label>
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">毕业时间：</label>
+                                                                                    <label class="form-control">xxx</label>
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">学历：</label>
+                                                                                    <label class="form-control">xxx</label>
+                                                                                </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-3">
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">学位：</label>
+                                                                                    <label class="form-control">xxx</label>
+                                                                                </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>-->
+                                                        </div>
+                                                </div>
+
+                                                <!--工作单位及地址-->
+                                                <div class="panel panel-info">
+                                                        <div class="panel-heading" id="addr-info">工作单位及地址</div>
+                                                        <div class="panel-body">
+                                                                <div class="row">
+                                                                    {% for onework in userinfo.work_set.all %}
+                                                                    <div class="col-md-4">
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">工作单位、职务：</label>
+                                                                                    <label class="form-control">{{ onework.WorkUnit }}</label>
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">工作单位地址：</label>
+                                                                                    <label class="form-control">{{ onework.WorkUnitAddr }}</label>
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">家庭地址：</label>
+                                                                                    <label class="form-control">{{ onework.HomeAddr }}</label>
+                                                                                </div>
+                                                                        </div>
+
+
+                                                                    </div>
+
+                                                                    <div class="col-md-3">
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">工作单位性质：</label>
+                                                                                    <label class="form-control">{{ onework.PropertyOfWorkUnit }}</label>
+                                                                                </div>
+                                                                        </div>
+
+
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">工作电话：</label>
+                                                                                    <label class="form-control">{{ onework.WorkPhone }}</label>
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">家庭电话：</label>
+                                                                                    <label class="form-control">{{ onework.HomePhone }}</label>
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">享受何种津贴：</label>
+                                                                                    <label class="form-control">{{ onework.WelfareLevel }}</label>
+                                                                                </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-3">
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">职务等级：</label>
+                                                                                    <label class="form-control">{{ onework.AdministrativeLevel }}</label>
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">工作地址邮编：</label>
+                                                                                    <label class="form-control">{{ onework.WorkPostcode }}</label>
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">家庭地址邮编：</label>
+                                                                                    <label class="form-control">{{ onework.HomePostcode }}</label>
+                                                                                </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-2">
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">专长：</label>
+                                                                                    <label class="form-control">{{ onework.specialty }}</label>
+                                                                                </div>
+                                                                        </div>
+
+
+                                                                        <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">选择通信地址：</label>
+                                                                                    <label class="form-control">{{ onework.ContactAddrType }}</label>
+                                                                                </div>
+                                                                        </div>
+                                                                        <!-- <div>
+                                                                                <div class="form-group">
+                                                                                    <label class="">是否用作通信地址：</label>
+                                                                                    <label class="form-control">xxx</label>
+                                                                                </div>
+                                                                        </div>-->
+
+                                                                    </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                        </div>
+                                                </div>
+
+                                                <!--任职信息-->
+                                                <div class="panel panel-success">
+                                                        <div class="panel-heading" id="job-info">参加人大、民革兼职情况</div>
+                                                        <div class="panel-body">
+                                                                <div class="row">
+                                                                    <table class="table table-bordered table-striped" style="text-align: center;">
+                                                                        <thead>
+                                                                            <th style="text-align: center;">任职类型</th>
+                                                                            <th style="text-align: center;">起始日期</th>
+                                                                            <th style="text-align: center;">终止日期</th>
+                                                                            <th style="text-align: center;">届次</th>
+                                                                            <th style="text-align: center;">任职单位及职务</th>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        {% for oneposition in  userinfo.positionsincepast_set.all %}
+                                                                            <tr>
+                                                                                <td>{{ oneposition.WorkType }}</td>
+                                                                                <td>{{ oneposition.StartDate }}</td>
+                                                                                <td>{{ oneposition.EndDate }}</td>
+                                                                                <td>{{ oneposition.Which }}</td>
+                                                                                <td>{{ oneposition.department }}</td>
+                                                                            </tr>
+                                                                        {% endfor %}
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                        </div>
+                                                </div>
+
+                                                 <!--简历信息-->
+                                                <div class="panel panel-success">
+                                                    <div class="panel-heading" id="resume-info">简历信息</div>
+                                                    <div class="panel-body">
+                                                        <div class="row">
+                                                            <table class="table table-bordered table-striped" style="text-align: center;">
+                                                                <thead>
+                                                                    <th style="text-align: center;">起始日期</th>
+                                                                    <th style="text-align: center;">终止日期</th>
+                                                                    <th style="text-align: center;">所在地、工作单位、职务</th>
+                                                                </thead>
+                                                                <tbody>
+                                                                {% for oneresume in userinfo.resume_set.all %}
+                                                                    <tr>
+                                                                        <td>{{ oneresume.StartDate }}</td>
+                                                                        <td>{{ oneresume.EndDate }}</td>
+                                                                        <td>{{ oneresume.department }}</td>
+                                                                </tr>
+                                                                {% endfor %}
+                                                                </tbody>
+
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!--获奖成就信息信息-->
+                                                <div class="panel panel-success">
+                                                    <div class="panel-heading" id="reward-info">获奖成就信息</div>
+                                                    <div class="panel-body">
+                                                        <div class="row">
+                                                            <table class="table table-bordered table-striped" style="text-align: center;">
+                                                                <thead>
+                                                                    <th style="text-align: center;">获奖时间</th>
+                                                                    <th style="text-align: center;">获奖级别</th>
+                                                                    <th style="text-align: center;">主办单位</th>
+                                                                    <th style="text-align: center;">获奖情况</th>
+                                                                </thead>
+                                                                <tbody>
+                                                                {% for oneawrad in userinfo.awardinfo_set.all %}
+                                                                    <tr>
+                                                                    <td>{{ oneawrad.AwardDate }}</td>
+                                                                    <td>{{ oneawrad.AwardLevel }}</td>
+                                                                    <td>{{ oneawrad.HoldWorkUnit }}</td>
+                                                                    <td>{{ oneawrad.AwardDetail }}</td>
+                                                                </tr>
+                                                                {% endfor %}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!--所受处分情况-->
+                                                <div class="panel panel-success">
+                                                    <div class="panel-heading" id="warnning-info">所受处分情况</div>
+                                                    <div class="panel-body">
+                                                        <div class="row">
+                                                            <table class="table table-bordered table-striped" style="text-align: center;">
+                                                                <thead>
+                                                                    <th style="text-align: center;">处分</th>
+                                                                    <th style="text-align: center;">时间</th>
+                                                                    <th style="text-align: center;">撤销情况</th>
+                                                                </thead>
+                                                                <tbody>
+                                                                {% for onepunish in userinfo.punish_set.all %}
+                                                                     <tr>
+                                                                    <td>{{ onepunish.details }}</td>
+                                                                    <td>{{ onepunish.PunishDate }}</td>
+                                                                    <td>{{ onepunish.CancelDetail }}</td>
+                                                                </tr>
+                                                                {% endfor %}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!--曾参加党培、团体情况-->
+                                                <div class="panel panel-success">
+                                                    <div class="panel-heading" id="party-info">曾参加党培、团体情况</div>
+                                                    <div class="panel-body">
+                                                        <div class="row">
+                                                            <table class="table table-bordered table-striped" style="text-align: center;">
+                                                                <thead>
+                                                                    <th style="text-align: center;">名称</th>
+                                                                    <th style="text-align: center;">地点</th>
+                                                                    <th style="text-align: center;">介绍人</th>
+                                                                    <th style="text-align: center;">职务</th>
+                                                                    <th style="text-align: center;">起始时间</th>
+                                                                    <th style="text-align: center;">现有无联系</th>
+                                                                </thead>
+                                                                <tbody>
+                                                                {% for oneactivity in userinfo.activity_set.all %}
+                                                                    <tr>
+                                                                    <td>{{ oneactivity.ActivityName }}</td>
+                                                                    <td>{{ oneactivity.addr }}</td>
+                                                                    <td>{{ oneactivity.introducer }}</td>
+                                                                    <td>{{ oneactivity.PositionOfIntroducer }}</td>
+                                                                    <td>{{ oneactivity.StartDate }}</td>
+                                                                    <td>{{ oneactivity.IsLinkedNow }}</td>
+                                                                </tr>
+                                                                {% endfor %}
+                                                                </tbody>
+
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                 <!--家庭成员情况-->
+                                                 <div class="panel panel-success">
+                                                    <div class="panel-heading" id="family-info">家庭成员情况</div>
+                                                    <div class="panel-body">
+                                                        <div class="row">
+                                                            <table class="table table-bordered table-striped" style="text-align: center;">
+                                                                <thead>
+                                                                    <th style="text-align: center;">姓名</th>
+                                                                    <th style="text-align: center;">关系</th>
+                                                                    <th style="text-align: center;">出生年月</th>
+                                                                    <th style="text-align: center;">文化程度</th>
+                                                                    <th style="text-align: center;">政治面貌</th>
+                                                                    <th style="text-align: center;">工作单位及职务</th>
+                                                                </thead>
+                                                                <tbody>
+                                                                {% for onefamily in userinfo.familymember_set.all %}
+                                                                    <tr>
+                                                                    <td>{{ onefamily.name}}</td>
+                                                                    <td>{{ onefamily.relation }}</td>
+                                                                    <td>{{ onefamily.BornDate }}</td>
+                                                                    <td>{{ onefamily.EducationLevel }}</td>
+                                                                    <td>{{ onefamily.PoliticalIdentity }}</td>
+                                                                    <td>{{ onefamily.DepartmentPosition }}</td>
+                                                                </tr>
+                                                                {% endfor %}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!--社会关系及民革特色关系-->
+                                                <div class="panel panel-success">
+                                                    <div class="panel-heading" id="social-info">社会关系及民革特色关系</div>
+                                                    <div class="panel-body">
+                                                        <div class="row">
+                                                            <table class="table table-bordered table-striped" style="text-align: center;">
+                                                                <thead>
+                                                                    <th style="text-align: center;">姓名</th>
+                                                                    <th style="text-align: center;">关系</th>
+                                                                    <th style="text-align: center;">出生年月</th>
+                                                                    <th style="text-align: center;">文化程度</th>
+                                                                    <th style="text-align: center;">政治面貌</th>
+                                                                    <th style="text-align: center;">工作单位及职务</th>
+                                                                    <th style="text-align: center;">现有无联系</th>
+                                                                </thead>
+                                                                 <tbody>
+                                                                    {% for oneminge in userinfo.mingerelation_set.all %}
+                                                                        <tr>
+                                                                        <td>{{ oneminge.name}}</td>
+                                                                        <td>{{ oneminge.relation }}</td>
+                                                                        <td>{{ oneminge.BornDate }}</td>
+                                                                        <td>{{ oneminge.EducationLevel }}</td>
+                                                                        <td>{{ oneminge.PoliticalIdentity }}</td>
+                                                                        <td>{{ oneminge.DepartmentPosition }}</td>
+                                                                        <td>{{ oneminge.IsLinkedNow }}</td>
+                                                                    </tr>
+                                                                    {% endfor %}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                        <div class="panel-footer">底部</div>
+                                    </div>
+
+                        </div>
+                </div>
+                </div>
+            </div>
+
+            <div id="footer-sec">
+                Copyright &copy; 2016.Company name All rights reserved.
+            </div>
+        </div>
+
+ </div>
+
+
+
+        <!-- /. ROW  -->
+
+
+    <!-- /. FOOTER  -->
+        <!-- CUSTOM SCRIPTS -->
+    <script src="{% static 'js/custom.js' %}"></script>
+    <!-- JQUERY SCRIPTS -->
+    <script src="{% static 'js/jquery-1.10.2.js'%}"></script>
+    <!-- BOOTSTRAP SCRIPTS -->
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <!-- METISMENU SCRIPTS -->
+    <script src="{% static 'js/jquery.metisMenu.js' %}"></script>
+       <!-- CUSTOM SCRIPTS -->
+
+
+
+</body>
+</html>
+
+
+
+
