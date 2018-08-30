@@ -92,7 +92,7 @@
             <div class="col-md-12">
                 <h1 class="page-head-line">修改个人信息</h1>
 
-<h1 class="page-subhead-line">{{ Msg }}</h1>
+                <h1 class="page-subhead-line">加 * 的为必填项，{{ Msg }}</h1>
                 <a class="btn btn-success" href="#basic-info">基本信息</a>
                 <a class="btn btn-warning" href="#edu-info"> 学历信息</a>
                 <a class="btn btn-info" href="#addr-info">单位地址</a>
@@ -103,19 +103,14 @@
                 <a class="btn btn-danger" href="#party-info">党派团体</a>
                 <a class="btn btn-success" href="#family-info">家庭成员</a>
                 <a class="btn btn-success" href="#social-info">社会关系</a>
-                <a href="" class="btn  btn-lg">
-
-
-
-                    <br>
-                </a>
-                <br>
-                <div style="margin-left: 300px">
-                    <a href="{% url 'modifyinfo' %}?id={{ new_user_id }}" class="btn btn-success btn-lg ">修改信息</a>
-                    <a href="{% url 'deleteinfo' %}?id={{ new_user_id }}" class="btn btn-info btn-lg ">删除信息</a>
-                    <a href="{% url 'userinformation_add' %}" class="btn btn-primary btn-lg ">新增信息</a>
+                <a href="" class="btn  btn-lg"></a>
+                <h1 class="page-head-line"></h1>
+                <div style="margin-left: 30px">
+                    <a href="{% url 'userlist' %}" class="btn btn-info btn-lg ">返回列表</a>
+                    <a href="{% url 'userinformation_add' %}" class="btn btn-success btn-lg ">新增信息</a>
+                    <a href="{% url 'deleteinfo' %}?id={{ new_user_id }}" class="btn btn-danger btn-lg ">删除信息</a>
                 </div>
-                <h1 class="page-subhead-line"> </h1>
+                <h1 class="page-subhead-line"></h1>
                 <br>
             </div>
 
@@ -137,14 +132,14 @@
                                                                 <div class="col-md-3">
                                                                     <div style="margin-top: 10px;">
                                                                         <div class="form-group">
-                                                                            <label class="">姓名：</label>
+                                                                            <label class="">*姓名：</label>
                                                                             <input value="{{ user.name }}" type="text" name="name" class="form-control">
                                                                         </div>
                                                                     </div>
 
                                                                     <div style="margin-top: 10px;">
                                                                             <div class="form-group">
-                                                                                <label class="" style="float: left; margin-right: 10px;">民族：</label>
+                                                                                <label class="" style="float: left; margin-right: 10px;">*民族：</label>
                                                                                 <select name="selectnation" class="form-control">
                                                                                     <option selected="selected">{{ user.nation }}</option>
                                                                                         <option>汉族</option>
@@ -212,21 +207,21 @@
 
                                                                     <div style="margin-top: 10px;">
                                                                             <div class="form-group">
-                                                                                <label class="">出生地：</label>
+                                                                                <label class="">*出生地：</label>
                                                                                 <input value="{{ user.BornPlace }}" name="Bornplace" class="form-control" type="text">
                                                                             </div>
                                                                     </div>
 
                                                                     <div style="margin-top: 10px;">
                                                                             <div class="form-group">
-                                                                                <label class="">党籍编号：</label>
-                                                                                <input  name="partynum" value="{{ user.PartyDocuNum }}"class="form-control" type="text" >
+                                                                                <label class="">*性别：</label>
+                                                                                <input  name="partynum" value="{% ifequal user.PartyDocuNum '男' %}男{% endifequal%}{% ifequal user.PartyDocuNum '女' %}女{% endifequal%}" class="form-control" type="text" >
                                                                             </div>
                                                                     </div>
 
                                                                     <div style="margin-top: 10px;">
                                                                             <div class="form-group">
-                                                                                <label class="">联系方式：</label>
+                                                                                <label class="">*联系方式：</label>
                                                                                 <input value="{{ user.MobilePhone }}" name="phonenum" class="form-control" type="text">
                                                                             </div>
                                                                     </div>
@@ -244,29 +239,29 @@
 
                                                                         <div style="margin-top: 10px;">
                                                                             <div class="form-group">
-                                                                                <label class="">籍贯：</label>
-                                                                                <input value="{{ user.NativePlace }}" name="nativeplace" class="form-control" type="text" placeholder="例如 湖北省武汉市">
+                                                                                <label class="">*籍贯：</label>
+                                                                                <input value="{{ user.NativePlace }}" name="nativeplace" class="form-control" type="text" placeholder="例 湖北省武汉市">
                                                                             </div>
                                                                         </div>
 
                                                                         <div style="margin-top: 10px;">
                                                                             <div class="form-group">
-                                                                                <label class="">出生日期：</label>
-                                                                                <input value="{{ user.BornDate }}" name="borndate" class="form-control" type="text" placeholder="例如 1998/03/22">
+                                                                                <label class="">*出生日期：</label>
+                                                                                <input value="{{ user.BornDate }}" name="borndate" class="form-control" type="text" placeholder="例 1998-03-22">
                                                                             </div>
                                                                         </div>
 
                                                                         <div style="margin-top: 10px;">
                                                                             <div class="form-group">
-                                                                                <label class="">所在支部：</label>
-                                                                                <input value="{{ user.BranchParty }}" name="branchname" class="form-control" type="text" placeholder="例如 武汉市武昌区九支部">
+                                                                                <label class="">*所在支部：</label>
+                                                                                <input value="{{ user.BranchParty }}" name="branchname" class="form-control" type="text" placeholder="例 武汉市武昌区九支部">
                                                                             </div>
                                                                         </div>
 
                                                                         <div style="margin-top: 10px;">
                                                                             <div class="form-group">
-                                                                                <label class="">邮箱：</label>
-                                                                                <input value="{{ user.email }}" name="email" class="form-control" type="text" placeholder="例如 123456789@qq.com">
+                                                                                <label class="">*邮箱：</label>
+                                                                                <input value="{{ user.email }}" name="email" class="form-control" type="text" placeholder="例 123456789@qq.com">
                                                                             </div>
                                                                         </div>
 
@@ -291,14 +286,14 @@
 
                                                                         <div style="margin-top: 10px;">
                                                                                 <div class="form-group">
-                                                                                    <label  class="">身份证号：</label>
+                                                                                    <label  class="">*身份证号：</label>
                                                                                     <input value="{{ user.IDCardNum }}" name="IDnum" class="form-control" type="text">
                                                                                 </div>
                                                                         </div>
 
                                                                         <div style="margin-top: 10px;">
                                                                                 <div class="form-group">
-                                                                                    <label class="">支部号：</label>
+                                                                                    <label class="">*支部号：</label>
                                                                                     <select  value="{{ user.BranchPartyNum }}" name="branchnnum" class="form-control">
                                                                                             <option selected="selected">{{ user.BranchPartyNum }}</option>
                                                                                             <option>1</option>
@@ -326,7 +321,7 @@
                                                                             </div>
                                                                     </div>
                                                                     <div style="margin: 20px">
-                                                                        <img src="{{ MEDIA_URL }}{{ user.img }}" style="width: 100%">
+                                                                        <img src="{{ MEDIA_URL }}{{ user.png }}" style="width: 100%">
                                                                     </div>
                                                                 </div>
                                                         </div>
@@ -372,7 +367,7 @@
                                                                     </td>
                                                                     <td>
                                                                         <div class="form-group">
-                                                                        <input value="{{ oneEdu.ComeIntoSchoolDate }}"name="edustartdate{{ forloop.counter }}" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_12">
+                                                                        <input value="{{ oneEdu.ComeIntoSchoolDate }}" name="edustartdate{{ forloop.counter }}" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_12">
                                                                         </div>
                                                                     </td>
                                                                     <td>
@@ -399,10 +394,10 @@
                                                                         <div class="form-group">
                                                                              <select name="degree{{ forloop.counter }}" class="form-control">
                                                                                     <option selected="selected">{{ oneEdu.EduDegree }}</option>
-                                                                                    <option>XX学学士</option>
-                                                                                    <option>XX学硕士</option>
-                                                                                    <option>XX学博士</option>
-                                                                                    <option>XX学博士后</option>
+                                                                                    <option>学士</option>
+                                                                                    <option>硕士</option>
+                                                                                    <option>博士</option>
+                                                                                    <option>博士后</option>
                                                                                     <option>其他</option>
                                                                                 </select>
                                                                         </div>
@@ -421,7 +416,7 @@
 
                                                                     <td>
                                                                         <div class="form-group">
-                                                                        <input name="school0" value="新添加的项请写在这一行" class = "form-control" type="text">
+                                                                        <input name="school0" value="" placeholder="新添加的项请写在这一行" class = "form-control" type="text">
                                                                         </div>
                                                                     </td>
                                                                     <td>
@@ -431,12 +426,12 @@
                                                                     </td>
                                                                     <td>
                                                                         <div class="form-group">
-                                                                        <input name="edustartdate0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_12">
+                                                                        <input name="edustartdate0" class = "form-control" type="text" value="" id="datetimepicker_12">
                                                                         </div>
                                                                     </td>
                                                                     <td>
                                                                         <div class="form-group">
-                                                                        <input name="eduenddate0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_13">
+                                                                        <input name="eduenddate0" class = "form-control" type="text" value="" id="datetimepicker_13">
                                                                         </div>
                                                                     </td>
                                                                     <td>
@@ -457,10 +452,10 @@
                                                                         <div class="form-group">
                                                                              <select name="degree0" class="form-control">
                                                                                     <option></option>
-                                                                                    <option>XX学学士</option>
-                                                                                    <option>XX学硕士</option>
-                                                                                    <option>XX学博士</option>
-                                                                                    <option>XX学博士后</option>
+                                                                                    <option>学士</option>
+                                                                                    <option>硕士</option>
+                                                                                    <option>博士</option>
+                                                                                    <option>博士后</option>
                                                                                     <option>其他</option>
                                                                                 </select>
                                                                         </div>
@@ -552,7 +547,7 @@
 
                                                                             <div style="margin-top: 10px;">
                                                                                     <div class="form-group">
-                                                                                        <label class="">职务性质：</label>
+                                                                                        <label class="">职务级别：</label>
                                                                                         <select name="workproperty" class="form-control">
                                                                                             <option selected="selected"> {{ oneWork.PropertyOfWorkUnit }}</option>
                                                                                             <option>部级，省级</option>
@@ -811,10 +806,10 @@
                                                                     </td>
 
                                                                     <td>
-                                                                        <input name="positionstartdate0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_3">
+                                                                        <input name="positionstartdate0" class = "form-control" type="text" value="" id="datetimepicker_3">
                                                                     </td>
                                                                     <td>
-                                                                        <input name="positionenddate0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_4">
+                                                                        <input name="positionenddate0" class = "form-control" type="text" value="" id="datetimepicker_4">
                                                                     </td>
                                                                     <td>
                                                                         <input name="positionwhich0" type="text" class="form-control">
@@ -856,11 +851,11 @@
                                                                 {% endfor %}
                                                             <tr>
                                                                     <td>
-                                                                        <input name="resumestartdate0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_5">
+                                                                        <input name="resumestartdate0" class = "form-control" type="text" value="" placeholder="新添加的项请写在这一行"id="datetimepicker_5">
                                                                     </td>
 
                                                                     <td>
-                                                                        <input name="resumeenddate0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_6">
+                                                                        <input name="resumeenddate0" class = "form-control" type="text" value="" id="datetimepicker_6">
                                                                     </td>
                                                                     <td>
                                                                         <input name="resumepositiondetail0" class="form-control" type="text" >
@@ -868,11 +863,6 @@
                                                                 </tr>
                                                             </table>
                                                         </div>
-                                                    <div class="row">
-                                                    <div class=" col-md-offset-10">
-                                                        <input class="btn btn-primary" value="添加" style="width: 80px">
-                                                    </div>
-                                                    </div>
                                                 </div>
                                             </div>
 
@@ -925,12 +915,12 @@
                                                         {% endfor%}
                                                             <tr>
                                                                 <td>
-                                                                    <input name="AwardTime0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_7">
+                                                                    <input name="AwardTime0" class = "form-control" type="text" value="" placeholder="新添加的项请写在这一行" id="datetimepicker_7">
                                                                 </td>
                                                                 <td>
                                                                     <div class="form-group">
                                                                         <select class="form-control" name="AwardGrade0">
-                                                                            <option disabled="disabled" selected>新加项写入此行</option>
+                                                                            <option disabled="disabled" selected></option>
                                                                             <option>国家级</option>
                                                                             <option>省部级</option>
                                                                             <option>地市级</option>
@@ -979,12 +969,12 @@
                                                                 <td>
                                                                     <div class="form-group">
                                                                         <input value="{{ onepunish.id }}" name="punishid{{ forloop.counter }}" type="text" style="display: none">
-                                                                        <input value="{{ onepunish.PunishDate }}" class="form-control" type="text" name="punishDetails{{ forloop.counter }}">
+                                                                        <input value="{{ onepunish.details }}" class="form-control" type="text" name="punishDetails{{ forloop.counter }}">
                                                                     </div>
                                                                 </td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input value="{{ onepunish.details }}"  name="punishDate{{ forloop.counter }}" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_8">
+                                                                        <input value="{{ onepunish.PunishDate  }}"  name="punishDate{{ forloop.counter }}" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_8">
                                                                     </div>
                                                                 </td>
                                                                 <td>
@@ -1001,18 +991,18 @@
                                                              <tr>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input class="form-control" type="text" name="punishDetails0">
+                                                                        <input class="form-control" type="text" placeholder="新添加的项请写在这一行" name="punishDetails0">
                                                                     </div>
                                                                 </td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input name="punishDate0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_8">
+                                                                        <input name="punishDate0" class = "form-control" type="text" value=""  id="datetimepicker_8">
                                                                     </div>
                                                                 </td>
                                                                 <td>
                                                                     <div class="form-group">
                                                                         <select name="CancelDetail0" class="form-control">
-                                                                            <option disabled="disabled" selected>新加项写入此行</option>
+                                                                            <option disabled="disabled" selected></option>
                                                                             <option>已撤销</option>
                                                                             <option>未撤销</option>
                                                                         </select>
@@ -1039,7 +1029,7 @@
                                                                 <th style="text-align: center;">职务</th>
                                                                 <th style="text-align: center;">起始时间</th>
                                                                 <th style="text-align: center;">现有无联系</th>
-                                                            </thead>>
+                                                            </thead>
 
                                                             <tbody>
                                                             {% for oneacti in user.activity_set.all %}
@@ -1084,7 +1074,7 @@
                                                             <tr>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input name="activityName0" class="form-control" type="text">
+                                                                        <input name="activityName0" class="form-control"  placeholder="新添加的项请写在这一行" type="text">
                                                                     </div>
                                                                 </td>
                                                                 <td>
@@ -1094,7 +1084,7 @@
                                                                 </td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input name="introducer0"  value="新加入项写入此行" class="form-control" type="text">
+                                                                        <input name="introducer0"  value="" class="form-control" type="text">
                                                                     </div>
                                                                 </td>
                                                                 <td>
@@ -1104,7 +1094,7 @@
                                                                 </td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input name="startDate0" class = "form-control" type="text" value="2012-05-15" id="datetimepicker_9">
+                                                                        <input name="startDate0" class = "form-control" type="text" value="" id="datetimepicker_9">
                                                                     </div>
                                                                 </td>
                                                                 <td>
@@ -1186,7 +1176,7 @@
                                                             <tr>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input name="memberName0" class="form-control" type="text">
+                                                                        <input name="memberName0" class="form-control" placeholder="新添加的项请写在这一行" type="text">
                                                                     </div>
                                                                 </td>
                                                                 <td>
@@ -1196,7 +1186,7 @@
                                                                 </td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input name="memBornDate0" class="form-control" type="text" value="2012-05-15" id="datetimepicker_10">
+                                                                        <input name="memBornDate0" class="form-control" type="text" value="" id="datetimepicker_10">
                                                                     </div>
                                                                 </td>
                                                                 <td>
@@ -1217,7 +1207,7 @@
                                                                 </td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input name="memPoliticalIdentity0" value="新加入项写入此行" class="form-control" type="text">
+                                                                        <input name="memPoliticalIdentity0" value="" class="form-control" type="text">
                                                                     </div>
                                                                 </td>
                                                                 <td>
@@ -1306,7 +1296,7 @@
                                                             <tr>
                                                                     <td>
                                                                         <div class="form-group">
-                                                                            <input name="relation0" class="form-control" type="text">
+                                                                            <input name="relation0" class="form-control"  placeholder="新添加的项请写在这一行" type="text">
                                                                         </div>
                                                                     </td>
                                                                     <td>
@@ -1316,7 +1306,7 @@
                                                                     </td>
                                                                     <td>
                                                                         <div class="form-group">
-                                                                            <input name="BornDate0" class="form-control" type="text" value="2012-05-15" id="datetimepicker_11">
+                                                                            <input name="BornDate0" class="form-control" type="text" value="" id="datetimepicker_11">
                                                                         </div>
                                                                     </td>
                                                                     <td>
@@ -1336,7 +1326,7 @@
                                                                     </td>
                                                                     <td>
                                                                         <div class="form-group">
-                                                                            <input name="PoliticalIdentity0" value="新加入项写入此行" class="form-control" type="text">
+                                                                            <input name="PoliticalIdentity0" value="" class="form-control" type="text">
                                                                         </div>
                                                                     </td>
                                                                     <td>
@@ -1363,11 +1353,10 @@
 
                                             <div class="row">
                                                 <div class="col-md-1 col-md-offset-5">
-                                                        <button type="submit" class="btn btn-primary">提交</button>
-                                                </div>
-
-                                                <div class="col-md-1 col-md-offset-1">
                                                     <button type="submit" class="btn btn-primary">重置</button>
+                                                </div>
+                                                <div class="col-md-1 col-md-offset-1">
+                                                        <button type="submit" class="btn btn-primary">提交</button>
                                                 </div>
 
                                             </div>

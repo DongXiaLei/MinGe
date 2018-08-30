@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.views.generic.base import View
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate,login,logout
 from .forms import LoginForm,ModifypwdForm,AdduserForm
 from .models import baseInfo,User,ContactList,education,Work,Resume,AwardInfo,Punish,PositionSincePast,MinGeRelation,FamilyMember,activity
 from datetime import datetime
@@ -67,7 +67,8 @@ def getAgeCount():
             ageSegMent["age55_60"] = ageSegMent["age55_60"] + 1
         else:
             ageSegMent["age60_"] = ageSegMent["age60_"] + 1
-    return ageSegMent
+    agelist = [ageSegMent["age0_20"],ageSegMent["age20_25"],ageSegMent["age25_30"],ageSegMent["age30_35"],ageSegMent["age35_40"],ageSegMent["age40_45"],ageSegMent["age45_50"],ageSegMent["age50_55"],ageSegMent["age55_60"],ageSegMent["age60_"]]
+    return agelist
 
 #支部性别统计
 # def getGenderCount(zhibuName):
@@ -77,10 +78,12 @@ def getAgeCount():
 def getGenderCount():
     manNum=ContactList.objects.filter(gender=u"男",).count()
     womanNum = ContactList.objects.filter(gender=u"女").count()
-    return {"male":manNum,"female":womanNum}
+    genderlist = [manNum,womanNum]
+    return genderlist
+    # return {"male":manNum,"female":womanNum}
 #支部学历统计
 def getEduExpCount():
-    UnderSeniorEduExpName=['高中']
+    UnderSeniorEduExpName=['高中','小学','初中']
     #专科
     TechniqueEduExpName=['大专','中专','专科']
     UndergraduateEduExpName = ['大学','本科']
@@ -93,13 +96,15 @@ def getEduExpCount():
     PostgraduateCount = ContactList.objects.filter(EduExperience__in=PostgraduateEduExpName).count()
     DoctorgraduateCount = ContactList.objects.filter(EduExperience__in=DoctorgraduateEduExpName).count()
     #TODO::注意，这里返回的是dict，使用需注意
-    return {
-        "undersenior":UnderSeniorCount,
-        "technique": TechniqueCount,
-        "undergraduate":UndergraduateCount,
-        "postgraduate":PostgraduateCount,
-        "doctor":DoctorgraduateCount
-    }
+    edulist=[UnderSeniorCount,TechniqueCount,UndergraduateCount,PostgraduateCount,DoctorgraduateCount]
+    return edulist
+    # return {
+    #     "undersenior":UnderSeniorCount,
+    #     "technique": TechniqueCount,
+    #     "undergraduate":UndergraduateCount,
+    #     "postgraduate":PostgraduateCount,
+    #     "doctor":DoctorgraduateCount
+    # }
 class ConfigInfo:
     setlist=['民革武昌区工委会一支部', '民革武昌区工委会二支部', '民革武昌区工委会三支部', '民革武昌区工委会四支部', '民革武昌区工委会五支部', '民革武昌区工委会六支部',
      '民革武昌区工委会七支部', '民革武昌区工委会八支部', '民革武昌区工委会九支部']
@@ -139,16 +144,15 @@ def index(request):
 def leader(request):
     if request.user.is_authenticated():
         return render(request, "leader.html", {"user":request.user,"time":datetime.now()})
-    else :
+    else:
         return render(request,"login.html")
 def activityView(request):
     if request.user.is_authenticated():
-
         return render(request, "activity.html", {"user":request.user,"time":datetime.now()})
     else :
         return render(request,"login.html")
-def logout(request):
-    logout(request.user)
+def Logout(request):
+    logout(request)
     return render(request,"login.html")
 
 
@@ -167,7 +171,6 @@ class addresslist(View):
                           {"allConGroup": member, "user": request.user, "time": datetime.now(),"flag":False})
         else:
             return render(request, "login.html")
-
 
 class LoginView(View):
     def get(self,request):
@@ -217,7 +220,6 @@ class ModifypwdView(View):
                     if pwd1 != pwd2:
                         return render(request, "modify_pwd.html", {"modify_form": modifypwd_form, "msg": "两次密码不一致"})
                     else:
-
                         USER.password = make_password(pwd1)
                         USER.save()
                         return render(request, "login.html")
@@ -328,7 +330,7 @@ class AdduserView(View):
                         else:
                             user.is_manager = 0
                         user.save()
-                        return render(request, "login.html")
+                        return render(request, "user_manage.html")
                 else:
                     return render(request, "add_user.html", {"adduser_form": adduser_form, "msg": "手机号不能为空"})
         else:
@@ -360,8 +362,6 @@ def search_userlist(request):
                            "msg": "输入不能为空，请重新输入！"})
         else:
             return render(request, "login.html")
-
-
 def search_address(request):
 
     search_name = request.POST.get("name", "")
@@ -392,27 +392,9 @@ def search_address(request):
 
 class userlist(View):
     def get(self, request):
-
-        # 测试获取数据的三个函数用
         allgender = getGenderCount()
         allede = getEduExpCount()
         allage = getAgeCount()
-
-        allgenderlist = []
-        for key,value in allgender.items():
-            allgenderlist.append(value)
-        alledelist1 =[]
-        alledelist2 = []
-        for key,value in allede.items():
-            alledelist1.append(key)
-            alledelist2.append(value)
-        allagelist1 =[]
-        allagelist2 = []
-        for key,value in allage.items():
-            allagelist1.append(key)
-            allagelist2.append(value)
-        # END 测试获取数据的三个函数用
-
         setList=ConfigInfo.setlist
         member=[]
         for onename in setList:
@@ -423,7 +405,7 @@ class userlist(View):
             if request.user.is_manager:
                 return render(request, "userlist.html",
                               {"flag":False, "allConGroup": member, "user": request.user, "time": datetime.now(),
-                               "allgender": allgenderlist, "alledelist2": alledelist2, "allagelist2": allagelist2})
+                               "allgender": allgender, "alledelist2": allede, "allagelist2": allage})
             else: return render(request, "login.html",{"msg":"您不是管理员，没有权限查看，请联系联络员解决！"})
         else:
             return render(request, "login.html")
@@ -452,8 +434,6 @@ def userinformation(request):
             pass
         return render(request, "userinformation.html",
                       {"user": request.user, "time": datetime.now(), "userinfo": user_info})
-
-
 
     else: return render(request,"login.html")
 class userinformation_add(View):
@@ -495,6 +475,7 @@ class userinformation_add(View):
             BaseInfo.BornPlace=Bornplace
             BaseInfo.BornDate = borndate
             BaseInfo.IDCardNum = IDnum
+
             BaseInfo.PartyDocuNum = partynum
 
             BaseInfo.BranchParty = branchname
@@ -581,10 +562,10 @@ class userinformation_add(View):
             work.user=new_user
             work.WorkUnit = workunit
             work.WorkUnitAddr = workunitaddr
-            work.AdministrativeLevel = workjob
+            work.AdministrativeLevel = workproperty
             work.WorkPhone = workphone
             work.WorkPostcode = workaddremailnum
-            work.PropertyOfWorkUnit = workproperty
+            work.PropertyOfWorkUnit = workjob
             work.HomeAddr = familyaddr
             work.HomePhone = familyphone
             work.HomePostcode= familyaddremailnum
@@ -1033,14 +1014,14 @@ class userinformation_add(View):
         add_contact = ContactList()
         add_contact.name = name
         add_contact.MobilePhone = phonenum
-        # add_contact.qqNum =
-        # add_contact.gender = models.CharField(max_length=255, verbose_name=u"性别")
+        add_contact.qqNum =email
+        add_contact.gender = partynum
         add_contact.BornDate = borndate
         add_contact.nation = nation
-        # add_contact.EduExperience =
-        # add_contact.PropertyOfWorkUnit = models.CharField(max_length=100, verbose_name=u"教育经历")
+        add_contact.EduExperience =eduexprience1
+        add_contact.PropertyOfWorkUnit = workproperty
         add_contact.WorkUnit = workunit
-        # add_contact.DateComeIntoMinGe = models.DateField(verbose_name=u"加入日期")
+        add_contact.DateComeIntoMinGe = datetime.now()
         if branchnnum=='':
             branchnnum='0'
         add_contact.BranchPartyName = ConfigInfo.setlist[int(branchnnum)-1]
@@ -1089,7 +1070,7 @@ class ModifyInfo(View):
             userDis=baseInfo.objects.get(name=userID)
         except:
             return render(request, "userinformation_add.html", {
-                "Msg":"读取用户失败，没有这个用户",
+                "Msg":"读取用户失败，没有这个用户,请添加！",
             })
         return render(request, "userinformation_modify.html", {
             "Msg": "请修改页面后保存",
@@ -1143,7 +1124,8 @@ class ModifyInfo(View):
             BaseInfo.BornPlace = Bornplace
             BaseInfo.BornDate = borndate
             BaseInfo.IDCardNum = IDnum
-            BaseInfo.PartyDocuNum = partynum
+
+            BaseInfo.PartyDocuNum =partynum
 
             BaseInfo.BranchParty = branchname
             BaseInfo.BranchPartyNum = branchnnum
@@ -1151,6 +1133,12 @@ class ModifyInfo(View):
             BaseInfo.email = email
             BaseInfo.img = ''
             BaseInfo.save()
+            # get new_user
+            modify_contact = ContactList.objects.get(name=name)
+            modify_contact.BranchPartyName = ConfigInfo.setlist[int(branchnnum) - 1]
+            modify_contact.gender =partynum
+            modify_contact.qqNum = email
+            modify_contact.save()
             #try:
             #    BaseInfo.save()
             #except:
@@ -1158,7 +1146,8 @@ class ModifyInfo(View):
             #    return render(request, "userinformation_add.html")
             #    pass
 
-        # get new_user
+
+
 
 
         # education
@@ -1203,6 +1192,9 @@ class ModifyInfo(View):
                 edu.EduExperience = eduexprience1
                 edu.EduDegree = degree1
                 edu.save()
+                modify_contact = ContactList.objects.get(name=name)
+                modify_contact.EduExperience = eduexprience1
+                modify_contact.save()
 
 
 
@@ -1247,10 +1239,10 @@ class ModifyInfo(View):
             work.user = new_user
             work.WorkUnit = workunit
             work.WorkUnitAddr = workunitaddr
-            work.AdministrativeLevel = workjob
+            work.AdministrativeLevel = workproperty
             work.WorkPhone = workphone
             work.WorkPostcode = workaddremailnum
-            work.PropertyOfWorkUnit = workproperty
+            work.PropertyOfWorkUnit = workjob
             work.HomeAddr = familyaddr
             work.HomePhone = familyphone
             work.HomePostcode = familyaddremailnum
@@ -1258,6 +1250,11 @@ class ModifyInfo(View):
             work.ContactAddrType = selectaddr
             work.WelfareLevel = salary
             work.save()
+
+            modify_contact = ContactList.objects.get(name=name)
+            modify_contact.WorkUnit = workunit
+            modify_contact.PropertyOfWorkUnit = workjob
+            modify_contact.save()
 
 
         # position
@@ -1345,65 +1342,7 @@ class ModifyInfo(View):
               resume1.EndDate = resumeenddate1
               resume1.department = resumepositiondetail1
               resume1.save()
-        #resumestartdate2 = request.POST.get("resumestartdate2", "")
-        #resumestartdate2 = ConfigInfo.getCorrectDate(resumestartdate2)
-        #resumeenddate2 = request.POST.get("resumeenddate2", "")
-        #resumeenddate2 = ConfigInfo.getCorrectDate(resumeenddate2)
-        #resumepositiondetail2 = request.POST.get("resumepositiondetail2", "")
 
-        #resumestartdate3 = request.POST.get("resumestartdate3", "")
-        #resumestartdate3 = ConfigInfo.getCorrectDate(resumestartdate3)
-        #resumeenddate3 = request.POST.get("resumeenddate3", "")
-        #resumeenddate3 = ConfigInfo.getCorrectDate(resumeenddate3)
-        #resumepositiondetail3 = request.POST.get("resumepositiondetail3", "")
-
-        #resumestartdate4 = request.POST.get("resumestartdate4", "")
-        #resumestartdate4 = ConfigInfo.getCorrectDate(resumestartdate4)
-        #resumeenddate4 = request.POST.get("resumeenddate4", "")
-        #resumeenddate4 = ConfigInfo.getCorrectDate(resumeenddate4)
-        #resumepositiondetail4 = request.POST.get("resumepositiondetail4", "")
-
-        #resumestartdate5 = request.POST.get("resumestartdate5", "")
-        #resumestartdate5 = ConfigInfo.getCorrectDate(resumestartdate5)
-        #resumeenddate5 = request.POST.get("resumeenddate5", "")
-        #resumeenddate5 = ConfigInfo.getCorrectDate(resumeenddate5)
-        #resumepositiondetail5 = request.POST.get("resumepositiondetail5", "")
-
-        #if not (resumepositiondetail1 == ''):
-        #    resume1 = Resume()
-        #    resume1.user = new_user
-        #    resume1.StartDate = resumestartdate1
-        #    resume1.EndDate = resumeenddate1
-        #    resume1.department = resumepositiondetail1
-        #    resume1.save()
-        #if not (resumepositiondetail2 == ''):
-        #    resume2 = Resume()
-        #    resume2.user = new_user
-        #    resume2.StartDate = resumestartdate2
-        #    resume2.EndDate = resumeenddate2
-        #    resume2.department = resumepositiondetail2
-        #    resume2.save()
-        #if not (resumepositiondetail3 == ''):
-        #    resume3 = Resume()
-        #    resume3.user = new_user
-        #    resume3.StartDate = resumestartdate3
-        #    resume3.EndDate = resumeenddate3
-        #    resume3.department = resumepositiondetail3
-        #    resume3.save()
-        #if not (resumepositiondetail4 == ''):
-        #    resume4 = Resume()
-        #    resume4.user = new_user
-        #    resume4.StartDate = resumestartdate4
-        #    resume4.EndDate = resumeenddate4
-        #    resume4.department = resumepositiondetail4
-        #    resume4.save()
-        #if not (resumepositiondetail5 == ''):
-        #    resume5 = Resume()
-        #    resume5.user = new_user
-        #    resume5.StartDate = resumestartdate5
-        #    resume5.EndDate = resumeenddate5
-        #    resume5.department = resumepositiondetail5
-        #    resume5.save()
 
             # 奖励信息
         for count in range(0,3):

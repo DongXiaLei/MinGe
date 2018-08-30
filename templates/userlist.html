@@ -138,6 +138,7 @@
                         </div>
                         {% csrf_token %}
                         <h1 class="page-subhead-line">{% if flag %}<strong>{{ msg }}</strong>{% endif %}&nbsp;根据姓名、手机号进行搜索</h1>
+                        </form>
 
                         <a class="btn btn-success" href="#1">  一支部</a>
                         <a class="btn btn-warning" href="#2">  二支部</a>
@@ -148,7 +149,9 @@
                         <a class="btn btn-info" href="#7">  七支部</a>
                         <a class="btn btn-danger" href="#8">  八支部</a>
                         <a class="btn btn-success" href="#9">  九支部</a>
-                    </form>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="{% url 'userinformation_add' %}" class="btn btn-success btn-lg ">新增信息</a>
+
                 </div>
                 {% for oneBranch in allConGroup %}
                 <div class="row" id="{{ forloop.counter }}">

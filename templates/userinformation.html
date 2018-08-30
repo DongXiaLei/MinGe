@@ -117,10 +117,13 @@
                     </a>
                     <br>
                     {% if user.is_superuser %}
-                        <div style="margin-left: 300px">
-                            <a href="{% url 'modifyinfo' %}?id={{ userinfo.id }}" class="btn btn-success btn-lg ">修改信息</a>
-                            <a href="{% url 'deleteinfo' %}?id={{ uesrinfo.id }}" class="btn btn-info btn-lg ">删除信息</a>
-                            <a href="{% url 'userinformation_add' %}" class="btn btn-primary btn-lg ">新增信息</a>
+                        <h1 class="page-head-line"></h1>
+                        <div style="margin-left: 30px">
+                            <a href="{% url 'userlist' %}" class="btn btn-info btn-lg ">返回列表</a>
+                            <a href="{% url 'modifyinfo' %}?name={{ userinfo.name }}" class="btn btn-warning btn-lg ">修改信息</a>
+                             <a href="{% url 'userinformation_add' %}" class="btn btn-success btn-lg ">新增信息</a>
+
+
                         </div>
                     <h1 class="page-subhead-line"> </h1>
                     {% endif %}
@@ -167,8 +170,8 @@
 
                                                                         <div>
                                                                                 <div class="form-group">
-                                                                                    <label class="">党籍编号：</label>
-                                                                                    <label class="form-control">{{ userinfo.PartyDocuNum }}</label>
+                                                                                    <label class="">性别：</label>
+                                                                                    <label class="form-control">{% ifequal user.PartyDocuNum '男' %}男{% endifequal%}{% ifequal user.PartyDocuNum '女' %}女{% endifequal%}</label>
                                                                                 </div>
                                                                         </div>
 
