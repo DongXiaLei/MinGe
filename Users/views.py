@@ -87,7 +87,7 @@ def getEduExpCount():
     #专科
     TechniqueEduExpName=['大专','中专','专科']
     UndergraduateEduExpName = ['大学','本科']
-    PostgraduateEduExpName=['研究生','硕士']
+    PostgraduateEduExpName=['研究生','硕士','研究生硕士']
     DoctorgraduateEduExpName=['博士']
 
     UnderSeniorCount=ContactList.objects.filter(EduExperience__in=UnderSeniorEduExpName).count()
@@ -483,12 +483,14 @@ class userinformation_add(View):
             BaseInfo.MobilePhone = phonenum
             BaseInfo.email = email
             BaseInfo.img =''
+
             try:
-                BaseInfo.save()
+                tmp = baseInfo.objects.get(name=name)
+                return render(request, "userinformation_add.html", {"msg": "此用户或手机号已存在，请修改！"})
             except:
-                #TODO::保存时出现异常,需要进行处理
-                return render(request,"userinformation_add.html")
-                pass
+                BaseInfo.save()
+
+        else:return render(request,"userinformation_add.html",{"msg":"姓名、生日、身份证号、手机号不能为空！"})
 
 
         #get new_user
@@ -498,7 +500,7 @@ class userinformation_add(View):
         except:
             print("用户基本信息插入出错，请检查")
             #TODO::这个地方，添加一个form,把这些数据在返回前端
-            return render(request, "userinformation_add.html")
+            return render(request, "userinformation_add.html",{"msg":"此用户或手机号已存在，请修改！"})
         # education
 
         edutype1 = request.POST.get("edutype1", "")
@@ -1014,11 +1016,11 @@ class userinformation_add(View):
         add_contact = ContactList()
         add_contact.name = name
         add_contact.MobilePhone = phonenum
-        add_contact.qqNum =email
+        add_contact.qqNum = email
         add_contact.gender = partynum
         add_contact.BornDate = borndate
         add_contact.nation = nation
-        add_contact.EduExperience =eduexprience1
+        add_contact.EduExperience = eduexprience1
         add_contact.PropertyOfWorkUnit = workproperty
         add_contact.WorkUnit = workunit
         add_contact.DateComeIntoMinGe = datetime.now()
@@ -1138,6 +1140,7 @@ class ModifyInfo(View):
             modify_contact.BranchPartyName = ConfigInfo.setlist[int(branchnnum) - 1]
             modify_contact.gender =partynum
             modify_contact.qqNum = email
+            modify_contact.MobilePhone = phonenum
             modify_contact.save()
             #try:
             #    BaseInfo.save()
